@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Toolkit</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        /* Google Fonts for a professional look */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        /* Color Palette Variables */
+        :root {
+            --black: #000000;
+            --dark-blue: #14213d;
+            --orange-accent: #fca311;
+            --light-gray: #e5e5e5;
+            --white: #ffffff;
+        }
+
+        /* General Body Styles */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--dark-blue);
+        }
+
+        /* --- Header --- */
+        .app-header {
+            background-color: var(--dark-blue);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- Tabs --- */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            background-color: var(--dark-blue);
+        }
+        .tab {
+            flex-grow: 1;
+            max-width: 250px;
+            padding: 15px 20px;
+            text-align: center;
+            color: var(--white);
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        .tab:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .tab.active {
+            color: var(--orange-accent);
+            border-bottom: 4px solid var(--orange-accent);
+        }
+
+        /* --- Content Area --- */
+        .content-container {
+            padding: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .tab-content {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            border-bottom: 2px solid var(--orange-accent);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        /* --- Textarea and Input Styles --- */
+        .io-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 350px;
+            padding: 15px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            resize: vertical;
+            box-sizing: border-box;
+            background-color: var(--white);
+            color: var(--black);
+            font-family: monospace;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: var(--orange-accent);
+            box-shadow: 0 0 8px rgba(252, 163, 17, 0.5);
+        }
+
+        /* OCR Specific Styles */
+        #ocr-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #d1ecf1;
+            color: #0c5460;
+            display: none; /* Hidden by default */
+        }
+        input[type="file"] {
+            margin-bottom: 15px;
+        }
+        label.file-label {
+            display: inline-block;
+            padding: 10px 15px;
+            background: var(--orange-accent);
+            color: var(--black);
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        label.file-label:hover {
+            background: #e0910b;
+        }
+        input[type="file"]#imageInput {
+            display: none;
+        }
+
+
+        /* CBM Result Box */
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--white);
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            min-height: 50px;
+            white-space: pre-wrap; /* Preserves formatting */
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .io-grid {
+                grid-template-columns: 1fr;
+            }
+            .app-header {
+                font-size: 1.8rem;
+            }
+            .tab {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">Data Toolkit</header>
+
+    <div class="tabs-container">
+        <div class="tab active" onclick="openTab('formatter')">Text Formatter</div>
+        <div class="tab" onclick="openTab('cbm')">CBM Calculator</div>
+        <div class="tab" onclick="openTab('aritzia')">ARITZIA Formatter</div>
+    </div>
+
+    <div class="content-container">
+
+        <div id="formatter" class="tab-content active">
+            <h2>Universal Text Formatter</h2>
+            <p>Paste text below, or paste/upload an image to extract text using OCR.</p>
+            <label for="imageInput" class="file-label">Choose Image File</label>
+            <input type="file" id="imageInput" accept="image/*">
+            <div id="ocr-status"></div>
+
+            <div class="io-grid">
+                <textarea id="inputBox" placeholder="Input: Paste text or an image here..."></textarea>
+                <textarea id="outputBox" placeholder="Output..."></textarea>
+            </div>
+        </div>
+
+        <div id="cbm" class="tab-content">
+            <h2>CBM Calculator</h2>
+            <p>Enter dimensions per line. Use `cm` or `m`. Supports sums (+).</p>
+            <textarea id="cbmInput" placeholder="Examples:&#10;50cm * 40cm * 30cm&#10;2m * 3m * 4m&#10;50cm * 40cm * 30cm + 2m * 3m * 4m"></textarea>
+            <div id="cbmResult" class="result-box"></div>
+        </div>
+
+        <div id="aritzia" class="tab-content">
+            <h2>ARITZIA Formatter</h2>
+            <p>Paste tab-separated data below. Format: PO [tab] ARTICLE [tab] STYLE [tab] DESCRIPTION</p>
+            <div class="io-grid">
+                <textarea id="aritziaInput" placeholder="Paste ARITZIA data here..."></textarea>
+                <textarea id="aritziaOutput" placeholder="Formatted output will appear here..."></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Core Formatting Logic (reused by other functions) ---
+        function formatText(text) {
+            if (!text || typeof text !== 'string') return "";
+            return text
+                .toUpperCase() // Convert to uppercase
+                .replace(/^\s*[\r\n]/gm, "") // Remove blank lines
+                .trim(); // Trim leading/trailing whitespace
+        }
+
+        // --- Tab Switching Logic ---
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- Text Formatter Logic ---
+        const inputBox = document.getElementById("inputBox");
+        const outputBox = document.getElementById("outputBox");
+        const imageInput = document.getElementById("imageInput");
+        const ocrStatus = document.getElementById("ocr-status");
+
+        inputBox.addEventListener("input", () => {
+            outputBox.value = formatText(inputBox.value);
+        });
+        
+        outputBox.addEventListener("input", () => {
+            // Allows manual editing of the output without affecting the input
+        });
+
+        const processImageFile = (file) => {
+            if (!file) return;
+            ocrStatus.style.display = 'block';
+            ocrStatus.textContent = 'Processing image... This may take a moment.';
+
+            Tesseract.recognize(file, 'eng', {
+                logger: m => console.log(m) // Logs progress to the console
+            }).then(({ data: { text } }) => {
+                inputBox.value = text;
+                outputBox.value = formatText(text); // Trigger formatting
+                ocrStatus.textContent = 'Image processing complete!';
+                setTimeout(() => { ocrStatus.style.display = 'none'; }, 3000);
+            }).catch(err => {
+                console.error(err);
+                ocrStatus.textContent = 'Error processing image.';
+            });
+        };
+
+        imageInput.addEventListener("change", (e) => {
+            processImageFile(e.target.files[0]);
+        });
+        
+        inputBox.addEventListener("paste", (e) => {
+            const items = e.clipboardData.items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf("image") !== -1) {
+                    e.preventDefault(); // Prevent image from being pasted as a file object text
+                    const file = items[i].getAsFile();
+                    processImageFile(file);
+                    break; // Process only the first image found
+                }
+            }
+        });
+
+        // --- CBM Calculator Logic ---
+        const cbmInput = document.getElementById("cbmInput");
+        const cbmResult = document.getElementById("cbmResult");
+
+        cbmInput.addEventListener("input", () => {
+            const lines = cbmInput.value.split("\n");
+            let totalCBM = 0;
+            const resultLines = [];
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+
+                const expressions = line.split('+').map(expr => expr.trim());
+                let lineCBM = 0;
+                let isValidLine = true;
+
+                expressions.forEach(expr => {
+                    // Regex to find numbers and their units (cm or m)
+                    const matches = expr.match(/(\d+\.?\d*)\s*(cm|m)/gi);
+                    if (matches && matches.length === 3) {
+                        const valuesInMeters = matches.map(match => {
+                            const value = parseFloat(match);
+                            const unit = match.toLowerCase().includes('cm') ? 'cm' : 'm';
+                            return unit === 'cm' ? value / 100 : value;
+                        });
+                        lineCBM += valuesInMeters[0] * valuesInMeters[1] * valuesInMeters[2];
+                    } else {
+                        isValidLine = false;
+                    }
+                });
+                
+                if (isValidLine) {
+                    resultLines.push(`${line.toUpperCase()} = ${lineCBM.toFixed(3)} m³`);
+                    totalCBM += lineCBM;
+                } else {
+                    resultLines.push(`Invalid format: ${line}`);
+                }
+            });
+
+            if (resultLines.length > 1 || (resultLines.length === 1 && cbmInput.value.includes('+'))) {
+                resultLines.push("--------------------");
+                resultLines.push(`Total = ${totalCBM.toFixed(3)} m³`);
+            }
+            
+            cbmResult.textContent = resultLines.join("\n");
+        });
+
+        // --- ARITZIA Formatter Logic ---
+        const aritziaInput = document.getElementById("aritziaInput");
+        const aritziaOutput = document.getElementById("aritziaOutput");
+
+        aritziaInput.addEventListener("input", () => {
+            const lines = aritziaInput.value.split("\n");
+            const formattedBlocks = [];
+
+            lines.forEach(line => {
+                if (!line.trim()) return;
+                const parts = line.split(/\s*\t\s*/); // Split by tab, allowing for surrounding whitespace
+                if (parts.length >= 4) {
+                    const [po, article, style, ...descriptionParts] = parts;
+                    const description = descriptionParts.join(' '); // Re-join description if it contained tabs
+
+                    formattedBlocks.push(
+                        `${description}\n` +
+                        `P.O. NO.: ${po}\n` +
+                        `ARTICLE: ${article}\n` +
+                        `STYLE NO.: ${style}`
+                    );
+                }
+            });
+
+            // Join blocks with a double newline, then apply the final universal formatting
+            aritziaOutput.value = formatText(formattedBlocks.join("\n\n"));
+        });
+
+    </script>
+</body>
+</html>
