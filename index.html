@@ -221,11 +221,13 @@
 
             return text
                 .toUpperCase()                           // Convert to uppercase
-                .replace(/^\s*[\r\n]/gm, "")             // Remove blank lines
+                .split("\n")                             // Split into lines
+                .map(line => line.trim())                // Trim spaces from each line
+                .filter(line => line.length > 0)         // Remove blank lines
+                .join("\n")                              // Rejoin with line breaks
                 .replace(/\t+/g, " ")                    // Replace tabs with single space
-                .replace(/ {2,}/g, " ")                  // Collapse multiple spaces
-                .trim();                                 // Trim leading/trailing whitespace
-            }
+                .replace(/ {2,}/g, " ");                 // Collapse multiple spaces
+        }
 
 
         // --- Tab Switching Logic ---
@@ -376,4 +378,5 @@
 
     </script>
 </body>
+
 </html>
