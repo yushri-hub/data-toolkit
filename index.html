@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" type="image/png" href="tips.png">
     <title>Data Toolkit</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
@@ -16,6 +17,9 @@
             --orange-accent: #fca311;
             --light-gray: #e5e5e5;
             --white: #ffffff;
+            --muted: #6b7280;
+            --error-bg: #fff1f0;
+            --error-border: #f87171;
         }
 
         /* General Body Styles */
@@ -57,7 +61,7 @@
             font-size: 1.1rem;
         }
         .tab:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.06);
         }
         .tab.active {
             color: var(--orange-accent);
@@ -87,7 +91,7 @@
             padding-bottom: 10px;
             margin-top: 0;
         }
-        
+
         /* --- Textarea and Input Styles --- */
         .io-grid {
             display: grid;
@@ -106,6 +110,7 @@
             background-color: var(--white);
             color: var(--black);
             font-family: monospace;
+            line-height: 1.45;
         }
         textarea:focus {
             outline: none;
@@ -142,7 +147,6 @@
             display: none;
         }
 
-
         /* CBM Result Box */
         .result-box {
             margin-top: 15px;
@@ -156,10 +160,101 @@
             font-size: 1.1rem;
             font-weight: bold;
         }
-        
+
+        /* PO Formatter debug box */
+        .po-debug {
+            margin-top: 12px;
+            padding: 12px;
+            background: #ffffff;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            min-height: 60px;
+        }
+
+        /* Small run-samples button */
+        .run-samples-btn {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: var(--dark-blue);
+            color: var(--white);
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+        }
+        .run-samples-btn:hover { opacity: 0.9; }
+
+        /* --- Text-to-Columns specific layout --- */
+        .ttc-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+        .ttc-left {
+            display: flex;
+            flex-direction: column;
+        }
+        .ttc-right {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 12px;
+        }
+        .ttc-outputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .ttc-controls {
+            display:flex;
+            gap:10px;
+            align-items:center;
+            flex-wrap:wrap;
+        }
+        .btn {
+            padding: 10px 12px;
+            background: var(--dark-blue);
+            color: var(--white);
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+        }
+        .btn.secondary {
+            background: #ffffff;
+            color: var(--dark-blue);
+            border: 1px solid #cfcfcf;
+        }
+        .small-note {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+        .invalid-box {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--dark-blue);
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 120px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+
         /* Responsive design for smaller screens */
         @media (max-width: 768px) {
             .io-grid {
+                grid-template-columns: 1fr;
+            }
+            .ttc-container {
+                grid-template-columns: 1fr;
+            }
+            .ttc-outputs {
                 grid-template-columns: 1fr;
             }
             .app-header {
@@ -169,6 +264,137 @@
                 font-size: 1rem;
             }
         }
+
+        /* START: NEW CBM component styles - merge into existing <style> (keeps old palette) */
+        :root {
+        /* reuse existing palette, but add a couple of helpers if missing */
+        --cbm-bg: #ffffff;
+        --cbm-card-shadow: 0 6px 18px rgba(20,33,61,0.04);
+        --cbm-accent: var(--dark-blue);
+        --cbm-muted: var(--muted);
+        --cbm-danger: var(--error-border);
+        --cbm-ok: #10b981;
+        --cbm-radius: 10px;
+        }
+
+        /* Scope everything under #cbm to avoid selector collision with other tabs */
+        #cbm .cbm-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        align-items: start;
+        }
+        #cbm .cbm-card {
+        background: var(--cbm-bg);
+        border-radius: var(--cbm-radius);
+        padding: 14px;
+        box-shadow: var(--cbm-card-shadow);
+        border: 1px solid #eef2ff;
+        }
+        #cbm h1, #cbm h2 {
+        margin: 0 0 10px 0;
+        font-size: 1.05rem;
+        color: var(--dark-blue);
+        }
+
+        /* textarea in CBM: keep same look as site textareas but slightly smaller */
+        #cbm textarea {
+        width: 100%;
+        min-height: 220px;
+        max-height: 520px;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        font-family: monospace;
+        font-size: 14px;
+        line-height: 1.4;
+        box-sizing: border-box;
+        background: var(--white);
+        color: var(--black);
+        resize: vertical;
+        }
+
+        /* Controls row (uses your existing .ttc-controls / .btn look & feel) */
+        #cbm .cbm-controls {
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        align-items:center;
+        margin-top:10px;
+        }
+        #cbm .cbm-controls label { font-size:0.9rem; color:var(--cbm-muted); display:block; }
+        #cbm select, #cbm input[type="number"], #cbm input[type="checkbox"] {
+        margin-top:6px;
+        padding:6px 8px;
+        border:1px solid #d1d5db;
+        border-radius:6px;
+        background:var(--white);
+        font-size:0.95rem;
+        }
+
+        /* Buttons consistent with site .btn but slightly smaller */
+        #cbm .btn-small {
+        padding:6px 10px;
+        border-radius:6px;
+        background: var(--dark-blue);
+        color: var(--white);
+        border: none;
+        font-weight:600;
+        cursor:pointer;
+        }
+        #cbm .btn-ghost {
+        background: transparent;
+        color: var(--dark-blue);
+        border: 1px solid #e6e9ef;
+        }
+
+        /* Table and result preview */
+        #cbm .table-wrap {
+        overflow:auto;
+        max-height:460px;
+        border-radius:8px;
+        margin-top:8px;
+        border:1px solid #eef2ff;
+        background:var(--white);
+        }
+        #cbm table {
+        width:100%;
+        border-collapse:collapse;
+        font-size:13px;
+        }
+        #cbm th, #cbm td {
+        padding:8px 10px;
+        border-bottom:1px solid #f1f5f9;
+        text-align:left;
+        }
+        #cbm th {
+        position:sticky;
+        top:0;
+        background: #ffffff;
+        z-index:2;
+        }
+
+        /* Status styles */
+        #cbm .status-ok { color: var(--cbm-ok); font-weight:600; }
+        #cbm .status-warn { color: #d97706; font-weight:600; }
+        #cbm .status-err { color: var(--cbm-danger); font-weight:700; }
+
+        /* Totals */
+        #cbm .totals { display:flex; gap:14px; flex-wrap:wrap; margin-top:12px; align-items:center; }
+        #cbm .tot-card { background:#fbfdff; border-radius:8px; padding:10px; border:1px solid #eef6ff; }
+
+        /* Small helpers */
+        #cbm .muted-small { font-size:12px; color:var(--cbm-muted); }
+        #cbm .truncate { max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:inline-block; vertical-align:middle; }
+
+        /* Responsive: keep the same responsive break as the rest of your site */
+        @media (max-width: 900px) {
+        #cbm .cbm-grid { grid-template-columns: 1fr; }
+        }
+        #cbm .kbd { border:1px solid #e6ecf8; padding:2px 6px; border-radius:6px; background:#fff; font-size:12px; }
+
+        /* END: NEW CBM component styles */
+
     </style>
 </head>
 <body>
@@ -179,6 +405,10 @@
         <div class="tab active" onclick="openTab('formatter')">Text Formatter</div>
         <div class="tab" onclick="openTab('cbm')">CBM Calculator</div>
         <div class="tab" onclick="openTab('aritzia')">ARITZIA Formatter</div>
+        <!-- PO Formatter tab (4th tab) -->
+        <div class="tab" onclick="openTab('poformatter')">PO Formatter</div>
+        <!-- NEW: Text-to-Columns tab (5th tab) -->
+        <div class="tab" onclick="openTab('texttocolumns')">Text-to-Columns</div>
     </div>
 
     <div class="content-container">
@@ -196,12 +426,119 @@
             </div>
         </div>
 
+        <!-- START: REPLACED CBM COMPONENT - replace your old <div id="cbm"> ... </div> with this block -->
         <div id="cbm" class="tab-content">
-            <h2>CBM Calculator</h2>
-            <p>Enter dimensions per line. Use `cm` or `m`. Supports sums (+).</p>
-            <textarea id="cbmInput" placeholder="Examples:&#10;50cm * 40cm * 30cm&#10;2m * 3m * 4m&#10;50cm * 40cm * 30cm + 2m * 3m * 4m"></textarea>
-            <div id="cbmResult" class="result-box"></div>
+        <h2>CBM Calculator</h2>
+        <p>Enter dimensions per line. Supports many formats (cm, m, mm, in, ft), quantities, and + sums.</p>
+
+        <div class="cbm-grid" style="margin-top:12px">
+            <!-- LEFT: Input card -->
+            <section class="cbm-card" aria-labelledby="cbm-input-title">
+            <h1 id="cbm-input-title">CBM Input</h1>
+            <label for="cbmInput" class="muted-small">Paste or type many lines (one item per line).</label>
+            <textarea id="cbmInput" aria-describedby="input-hint" placeholder="e.g. 50cm * 40cm * 30cm&#10;2 x 50cm x 40cm x 30cm&#10;50 x 40 x 30 cm + 2m * 3m * 4m"></textarea>
+
+            <div class="cbm-controls" style="margin-top:8px">
+                <div>
+                <label class="muted-small">Default unit
+                    <select id="defaultUnit" aria-label="Default unit">
+                    <option value="cm">cm (default)</option>
+                    <option value="m">m</option>
+                    <option value="mm">mm</option>
+                    <option value="in">in</option>
+                    <option value="ft">ft</option>
+                    </select>
+                </label>
+                </div>
+
+                <div>
+                <label class="muted-small">Volumetric weight
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
+                    <input id="volToggle" type="checkbox" checked aria-label="Toggle volumetric weight"/><span class="muted-small">enabled</span>
+                    </div>
+                </label>
+                </div>
+
+                <div>
+                <label class="muted-small">Divisor
+                    <input id="divisor" type="number" min="100" step="1" value="6000" aria-label="Volumetric divisor" style="width:110px"/>
+                </label>
+                </div>
+
+                <div>
+                <label class="muted-small">CBM decimals
+                    <input id="decimals" type="number" min="0" max="6" step="1" value="3" aria-label="CBM decimal places" style="width:80px"/>
+                </label>
+                </div>
+
+                <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+                <button id="copyCsv" class="btn-small">Copy CSV</button>
+                <button id="downloadCsv" class="btn-small">Download CSV</button>
+                <button id="clearInput" class="btn-small btn-ghost">Clear</button>
+                </div>
+            </div>
+
+            <div class="muted-small" id="input-hint" style="margin-top:10px">
+                Live parsing. Use <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> to parse immediately.
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button id="sample1" class="btn-small small">Sample 1</button>
+                <button id="sample2" class="btn-small small">Sample 2</button>
+                <button id="sample3" class="btn-small small">Test set</button>
+                <button id="runTests" class="btn-small small">Run unit tests</button>
+                </div>
+                <div class="muted-small">Ambiguous lines will show a warning.</div>
+            </div>
+            </section>
+
+            <!-- RIGHT: Preview card -->
+            <section class="cbm-card" aria-labelledby="cbm-preview-title">
+            <h1 id="cbm-preview-title">Parsed Preview</h1>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                <div class="muted-small">Rows parsed: <strong id="rowCount">0</strong></div>
+                <div class="muted-small">Divisor: <strong id="divDisplay">6000</strong></div>
+            </div>
+
+            <div class="table-wrap" role="region" aria-live="polite" aria-label="Parsed rows" style="margin-top:8px">
+                <table id="resultTable" aria-describedby="tableDesc">
+                <thead>
+                    <tr>
+                    <th>Raw</th>
+                    <th>Qty</th>
+                    <th>L (orig)</th>
+                    <th>W (orig)</th>
+                    <th>H (orig)</th>
+                    <th>L/W/H (m)</th>
+                    <th class="align-right">CBM (m³)</th>
+                    <th class="align-right">Vol (kg)</th>
+                    <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="resultBody"></tbody>
+                </table>
+            </div>
+
+            <div class="totals" aria-hidden="false">
+                <div class="tot-card">
+                <div class="muted-small">Total CBM</div>
+                <div id="totalCbm" style="font-weight:700;font-size:18px">0.000 m³</div>
+                </div>
+
+                <div class="tot-card" id="volTotalCard" style="display:flex;flex-direction:column;align-items:flex-start">
+                <div class="muted-small">Total Volumetric Weight</div>
+                <div id="totalVol" style="font-weight:700;font-size:18px">0.00 kg</div>
+                </div>
+            </div>
+
+            <div id="messages" role="status" aria-live="polite" style="margin-top:10px" class="muted-small"></div>
+            </section>
         </div>
+        </div>
+        <!-- END: REPLACED CBM COMPONENT -->
+
 
         <div id="aritzia" class="tab-content">
             <h2>ARITZIA Formatter</h2>
@@ -209,6 +546,64 @@
             <div class="io-grid">
                 <textarea id="aritziaInput" placeholder="Paste ARITZIA data here..."></textarea>
                 <textarea id="aritziaOutput" placeholder="Formatted output will appear here..."></textarea>
+            </div>
+        </div>
+
+        <!-- PO Formatter content (4th tab) -->
+        <div id="poformatter" class="tab-content">
+            <h2>PO Formatter</h2>
+            <p>Paste PO numbers, groups (slashes), commas, semicolons, or upload an image that contains PO data. Output is a single line, comma-separated, no spaces, with duplicates removed and slash-groups expanded.</p>
+            <div class="io-grid">
+                <textarea id="poInput" placeholder="Paste POs here... Examples:&#10;536838863/962/292&#10;3810083392,3810083406,3810083392&#10;810083407/392/393/400/401/406"></textarea>
+                <textarea id="poOutput" placeholder="Formatted output will appear here..." readonly></textarea>
+            </div>
+
+            <button class="run-samples-btn" id="runSamplesBtn">Run Samples</button>
+            <div id="poDebug" class="po-debug"></div>
+        </div>
+
+        <!-- NEW: Text-to-Columns tab (5th tab) -->
+        <div id="texttocolumns" class="tab-content">
+            <h2>Text-to-Columns</h2>
+            <p>Paste lines that contain a PO number and a destination code (space/tab/slash/backslash separated). Example:<br>
+               <code>536372836 KHSCH</code></p>
+
+            <div class="ttc-container">
+                <div class="ttc-left">
+                    <label class="small-note">Input (paste multiple lines here):</label>
+                    <textarea id="ttcInput" placeholder="Example:&#10;536372836 KHSCH&#10;536372363/KHSCH&#10;536372383\KHSC"></textarea>
+
+                    <div style="margin-top:10px" class="ttc-controls">
+                        <button class="btn" id="processTTCBtn">Process</button>
+                        <button class="btn secondary" id="clearTTCInput">Clear</button>
+                        <div style="flex:1"></div>
+                        <div class="small-note" id="ttcSummary">0 lines processed</div>
+                    </div>
+
+                    <div id="ttcInvalid" class="invalid-box" style="display:none;"></div>
+                </div>
+
+                <div class="ttc-right">
+                    <div class="ttc-controls" style="justify-content: space-between;">
+                        <div>
+                            <button class="btn" id="copyPOs">Copy PO</button>
+                            <button class="btn" id="copyDests">Copy Dest</button>
+                            <button class="btn" id="copyCSV">Copy as CSV</button>
+                        </div>
+                        <div class="small-note">Outputs are aligned by row. Copy & paste directly into Excel.</div>
+                    </div>
+
+                    <div class="ttc-outputs">
+                        <div>
+                            <label class="small-note">PO# (left column)</label>
+                            <textarea id="ttcPOs" readonly placeholder="POs will appear here..."></textarea>
+                        </div>
+                        <div>
+                            <label class="small-note">Destination (right column)</label>
+                            <textarea id="ttcDests" readonly placeholder="Destinations will appear here..."></textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -229,14 +624,20 @@
                 .replace(/ {2,}/g, " ");                 // Collapse multiple spaces
         }
 
-
         // --- Tab Switching Logic ---
         function openTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            const el = document.getElementById(tabId);
+            if (el) el.classList.add('active');
+
+            try {
+                // if invoked by an onclick event, mark that tab active visually
+                event.currentTarget.classList.add('active');
+            } catch (e) {
+                // ignore if event not present
+            }
         }
 
         // --- Text Formatter Logic ---
@@ -262,9 +663,26 @@
                 logger: m => console.log(m) // Logs progress to the console
             }).then(({ data: { text } }) => {
                 inputBox.value = text;
-                outputBox.value = formatText(text); // Trigger formatting
+                outputBox.value = formatText(text); // Trigger formatting for Text Formatter
+
+                // If the PO tab is active and element exists, populate it (PO Formatter integration)
+                const poInputEl = document.getElementById('poInput');
+                const activePoTab = document.getElementById('poformatter');
+                if (poInputEl && activePoTab && activePoTab.classList.contains('active')) {
+                    poInputEl.value = text;
+                    processPOAndRender();
+                }
+
+                // Also if Text-to-Columns tab active, populate its input and process
+                const ttcEl = document.getElementById('texttocolumns');
+                const ttcInput = document.getElementById('ttcInput');
+                if (ttcInput && ttcEl && ttcEl.classList.contains('active')) {
+                    ttcInput.value = text;
+                    processTextToColumns();
+                }
+
                 ocrStatus.textContent = 'Image processing complete!';
-                setTimeout(() => { ocrStatus.style.display = 'none'; }, 3000);
+                setTimeout(() => { ocrStatus.style.display = 'none'; }, 2500);
             }).catch(err => {
                 console.error(err);
                 ocrStatus.textContent = 'Error processing image.';
@@ -296,57 +714,688 @@
                 }
                 }
             }
-            });
-
-
+        });
 
         // --- CBM Calculator Logic ---
-        const cbmInput = document.getElementById("cbmInput");
-        const cbmResult = document.getElementById("cbmResult");
+        /* =========================
+            CBM Calculator - JS
+            - Plain JS, modular parser
+            - Designed for embedding & extension
+            ========================= */
 
-        cbmInput.addEventListener("input", () => {
-            const lines = cbmInput.value.split("\n");
-            let totalCBM = 0;
-            const resultLines = [];
+            /* -------------
+            Configuration (change here if needed)
+            ------------- */
+            const CONFIG = {
+            defaultUnit: 'cm',   // default unit when missing (can be changed in UI)
+            defaultDivisor: 6000,
+            decimals: 3,         // CBM rounding decimals
+            volEnabled: true,
+            debounceMs: 300,
+            chunkThreshold: 800, // when > this many lines do chunked processing
+            };
 
-            lines.forEach(line => {
-                line = line.trim();
-                if (!line) return;
+            /* -------------
+            Unit conversion factors -> meters
+            ------------- */
+            const UNIT_FACTORS = {
+            mm: 0.001,
+            millimeter: 0.001, millimetre: 0.001, millimeters:0.001, millimetres:0.001,
+            cm: 0.01,
+            centimeter: 0.01, centimetre:0.01, centimeters:0.01, centimetres:0.01,
+            m: 1,
+            meter:1, metre:1, meters:1, metres:1,
+            in: 0.0254, inch:0.0254, inches:0.0254,
+            ft: 0.3048, foot:0.3048, feet:0.3048,
+            };
 
-                const expressions = line.split('+').map(expr => expr.trim());
-                let lineCBM = 0;
-                let isValidLine = true;
+            /* -------------
+            Utilities
+            ------------- */
+            function roundTo(num, decimals){
+            const p = Math.pow(10, decimals);
+            return Math.round((Number(num) + Number.EPSILON) * p) / p;
+            }
 
-                expressions.forEach(expr => {
-                    // Regex to find numbers and their units (cm or m)
-                    const matches = expr.match(/(\d+\.?\d*)\s*(cm|m)/gi);
-                    if (matches && matches.length === 3) {
-                        const valuesInMeters = matches.map(match => {
-                            const value = parseFloat(match);
-                            const unit = match.toLowerCase().includes('cm') ? 'cm' : 'm';
-                            return unit === 'cm' ? value / 100 : value;
-                        });
-                        lineCBM += valuesInMeters[0] * valuesInMeters[1] * valuesInMeters[2];
-                    } else {
-                        isValidLine = false;
-                    }
-                });
-                
-                if (isValidLine) {
-                    resultLines.push(`${line.toUpperCase()} = ${lineCBM.toFixed(3)} m³`);
-                    totalCBM += lineCBM;
-                } else {
-                    resultLines.push(`Invalid format: ${line}`);
-                }
+            function formatNum(num, decimals){
+            if (num === null || num === undefined || Number.isNaN(num)) return '-';
+            return roundTo(num, decimals).toFixed(decimals);
+            }
+
+            function safeText(s, max=60){
+            if (typeof s !== 'string') s = String(s);
+            return s.length > max ? s.slice(0, max-1) + '…' : s;
+            }
+
+            /* Debounce */
+            function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms);} }
+
+            /* CSV escaping */
+            function csvEscape(cell){
+            if (cell === null || cell === undefined) return '';
+            const s = String(cell);
+            if (s.includes('"') || s.includes(',') || s.includes('\n')) {
+                return '"' + s.replace(/"/g,'""') + '"';
+            }
+            return s;
+            }
+
+            /* -------------
+            Parsing functions
+            ------------- */
+
+            /**
+             * parseInput(text) -> returns array of parsed lines with components
+             * Each returned object:
+             * {
+             *   rawLine: original raw text,
+             *   components: [ { qty, rawComponentText, dims: {l,w,h, unitL, unitW, unitH}, l_m,w_m,h_m, cbm, vol_kg, status } ... ],
+             *   aggregated: { qty, cbm, vol_kg, status }
+             * }
+             */
+            function parseInput(text, options = {}) {
+            const cfg = Object.assign({}, CONFIG, options);
+            const lines = text ? text.split(/\r?\n/) : [];
+            const out = [];
+            for (let i=0;i<lines.length;i++){
+                const raw = lines[i].trim();
+                if (raw === '') continue;
+                out.push(parseLine(raw, cfg));
+            }
+            return out;
+            }
+
+            /**
+             * parseLine handles quantity, '+' summation, codes like "3810082864/KHSC",
+             * parentheses, mixed separators, unit inference, and graceful errors.
+             */
+            function parseLine(raw, cfg){
+            const original = raw;
+            const status = { ok:true, messages:[] };
+            // Quick detect: code-like lines containing slash/backslash and non-dimension tokens
+            // If the entire line looks like "12345/KHSC" or "3810082864\KHSC" attempt to split and label as code
+            const codeMatch = raw.match(/^([^+\s\\\/]+)[\\\/]([^+\s\\\/]+)$/);
+            if (codeMatch) {
+                const a = codeMatch[1], b = codeMatch[2];
+                const found = {};
+                if (/^\d+$/.test(a)) found.po = a;
+                if (!/^\d+$/.test(b) && b.length>0) found.code = b;
+                // mark as code-style
+                return {
+                rawLine: original,
+                components: [],
+                aggregated: { qty:1, cbm:0, vol_kg:0, status: 'Code parsed', meta: found }
+                };
+            }
+
+            // Normalize separators: replace Unicode multiply sign with x, convert commas to dots in numbers? don't change commas globally
+            let normalized = raw.replace(/\u00D7/g,'x').replace(/\*/g,' x ').replace(/[^\S\r\n]+/g,' ').trim();
+
+            // Remove outer parentheses
+            normalized = normalized.replace(/^\((.*)\)$/,'$1').trim();
+
+            // split by '+' not inside parentheses (simple approach: we don't support nested parentheses heavy)
+            const componentsText = splitTopLevelPlus(normalized);
+
+            // extract line-level quantity (applies to entire line if present)
+            let qtyLine = 1;
+            let qtyConsumed = false;
+            let leftoverFirst = componentsText[0];
+            const qtyRes = extractQuantity(leftoverFirst);
+            if (qtyRes) {
+                qtyLine = qtyRes.qty;
+                // remove qty token from the first component text
+                componentsText[0] = leftoverFirst.slice(qtyRes.consumedLength).trim();
+                qtyConsumed = true;
+            }
+
+            const parsedComponents = componentsText.map(compText => {
+                const c = parseComponent(compText, cfg);
+                // apply line-level qty (multiply) — but keep component's own qty if it had internal quantity
+                c.qty = (c.qty||1) * qtyLine;
+                // status propagation
+                return c;
             });
 
-            if (resultLines.length > 1 || (resultLines.length === 1 && cbmInput.value.includes('+'))) {
-                resultLines.push("--------------------");
-                resultLines.push(`Total = ${totalCBM.toFixed(3)} m³`);
+            // aggregated CBM and vol
+            let aggCbm = 0, aggVol = 0;
+            let aggStatus = 'OK';
+            for (const c of parsedComponents){
+                if (c.cbm) aggCbm += c.cbm;
+                if (c.vol_kg) aggVol += c.vol_kg || 0;
+                if (!c.ok) {
+                aggStatus = c.status || 'Warning';
+                }
             }
-            
-            cbmResult.textContent = resultLines.join("\n");
-        });
+
+            return {
+                rawLine: original,
+                components: parsedComponents,
+                aggregated: {
+                qty: qtyLine,
+                cbm: aggCbm,
+                vol_kg: aggVol,
+                status: aggStatus
+                }
+            };
+            }
+
+            /* Split by top-level '+' (ignoring inside parentheses) */
+            function splitTopLevelPlus(s){
+            const parts = [];
+            let cur = '', depth = 0;
+            for (let i=0;i<s.length;i++){
+                const ch = s[i];
+                if (ch === '(') { depth++; cur += ch; continue; }
+                if (ch === ')') { if (depth>0) depth--; cur += ch; continue; }
+                if (ch === '+' && depth === 0) {
+                parts.push(cur.trim());
+                cur = '';
+                continue;
+                }
+                cur += ch;
+            }
+            if (cur.trim() !== '') parts.push(cur.trim());
+            return parts;
+            }
+
+            /* Extract quantity at start of a component. Returns {qty, consumedLength} or null */
+            function extractQuantity(s){
+            // Patterns: ^(\d+(\.\d+)?)\s*(?:pcs?|pieces|p|pc|qty:?|x|\*)\b
+            // or compact like '2x50cm' or '2pcs*50cm'
+            const patterns = [
+                /^\s*(\d+(?:\.\d+)?)\s*(?:pcs?|pieces|p|pc)\b/i,
+                /^\s*(?:qty[:\s])\s*(\d+(?:\.\d+)?)/i,
+                /^\s*(\d+(?:\.\d+)?)\s*[x×\*]\s*/i,
+                /^\s*(\d+(?:\.\d+)?)(?=[A-Za-z])/i // e.g., '3pcs50cm' handled above; this captures digits directly followed by letters
+            ];
+            for (const re of patterns){
+                const m = s.match(re);
+                if (m) {
+                return { qty: Number(m[1]), consumedLength: m[0].length };
+                }
+            }
+            return null;
+            }
+
+            /* parseComponent: parse a single "component" string (one cuboid)
+            returns object { qty, raw, dims: {lRaw, wRaw, hRaw}, l_m,w_m,h_m, cbm, vol_kg, ok, status }
+            */
+            function parseComponent(compText, cfg){
+            const out = {
+                rawComponentText: compText,
+                qty: 1,
+                dims: null,
+                l_m: null, w_m: null, h_m: null,
+                cbm: 0,
+                vol_kg: 0,
+                ok: true,
+                status: 'OK'
+            };
+
+            let s = compText.trim();
+            if (!s) {
+                out.ok = false; out.status = 'Empty component';
+                return out;
+            }
+
+            // Try to extract quantity inside the component like '2pcs * 50cm * 40cm * 30cm'
+            const qtyRes = extractQuantity(s);
+            if (qtyRes) {
+                out.qty = Number(qtyRes.qty);
+                s = s.slice(qtyRes.consumedLength).trim();
+            }
+
+            // Remove parentheses around dims if any
+            s = s.replace(/^\((.*)\)$/, '$1').trim();
+
+            // Replace separators (x,×,*,comma) with space while keeping unit letters
+            // But preserve patterns like "50cm40cm30cm" by not removing letters/digits adjacency.
+            // We'll extract numeric tokens + unit using regex below.
+            const tokens = []; // will hold {num, unit, raw}
+            // Regex to find number with optional unit (e.g., 50cm, 2.5 m, 20in)
+            // We'll collect all number occurrences and units if present.
+            const tokenRegex = /(\d+(?:\.\d+)?)(?:\s*(mm|millimetres|millimeters|cm|centimeters|centimetres|m|meters|metres|in|inch|inches|ft|foot|feet|'|″|”)?)/ig;
+            let m;
+            while ((m = tokenRegex.exec(s)) !== null) {
+                let unit = (m[2] || '').toLowerCase();
+                if (unit === "'" || unit === "’") unit = 'ft';
+                if (unit === '""' || unit === '″' || unit === '”') unit = 'in';
+                // normalize plural forms
+                if (unit.endsWith('s')) unit = unit.replace(/s$/,'');
+                tokens.push({ num: Number(m[1]), unit: unit || null, raw: m[0], idx: m.index });
+            }
+
+            // Special case: if we didn't find numbers but the string is like "50x40x30cm" or "50cm40cm30cm",
+            // the regex above should find numbers. If tokens length 0 and string contains chars, mark invalid.
+            if (tokens.length === 0) {
+                // But attempt to salvage: detect patterns like "50x40x30 cm" by splitting on non-digit/letter
+                const sepGuess = s.match(/(\d+)/g);
+                if (sepGuess && sepGuess.length >= 3) {
+                // assume unit at end or default
+                const lastUnit = (s.match(/(mm|cm|m|in|ft|inch|inches|feet|foot)/i) || [null])[0];
+                const inferredUnit = lastUnit ? lastUnit.toLowerCase() : null;
+                const nums = sepGuess.map(n => Number(n));
+                for (let i=0;i<nums.length;i++){
+                    const unit = inferredUnit ? inferredUnit : null;
+                    tokens.push({ num: nums[i], unit: unit, raw: String(nums[i]) });
+                }
+                } else {
+                // If string contains slash/backslash like PO/code, attempt to split and label
+                if (s.includes('/') || s.includes('\\')) {
+                    const parts = s.split(/[\/\\]/).map(p=>p.trim()).filter(Boolean);
+                    const meta = {};
+                    if (parts.length>=1 && /^\d+$/.test(parts[0])) meta.po = parts[0];
+                    if (parts.length>=2) meta.code = parts[1];
+                    out.ok = false;
+                    out.status = 'Non-dimension code(s)';
+                    out.meta = meta;
+                    return out;
+                }
+                out.ok = false; out.status = 'No dimensions detected';
+                return out;
+                }
+            }
+
+            // From tokens, infer units: if some tokens have units and others not, apply the last present unit to those missing
+            // E.g., "50 x 40 x 30 cm" -> tokens [50,null],[40,null],[30,'cm'] -> apply 'cm' to first two
+            // Find last unit in tokens
+            let lastUnit = null;
+            for (let t of tokens) if (t.unit) lastUnit = t.unit;
+            // If still no lastUnit, check for any unit words in the full string
+            if (!lastUnit) {
+                const foundUnit = s.match(/(mm|cm|m|in|ft|inch|inches|feet|foot)/i);
+                if (foundUnit) lastUnit = foundUnit[0].toLowerCase();
+            }
+
+            // If unitless tokens and no lastUnit found, we'll use default unit but warn
+            const usingDefaultUnit = (!lastUnit);
+            if (usingDefaultUnit) {
+                lastUnit = cfg.defaultUnit || CONFIG.defaultUnit || 'cm';
+            }
+
+            // Assign units to tokens that are missing
+            tokens.forEach(t => {
+                if (!t.unit) t.unit = lastUnit;
+                // normalize short forms
+                if (t.unit === 'inches' || t.unit === 'inch') t.unit = 'in';
+                if (t.unit === 'feet' || t.unit === 'foot') t.unit = 'ft';
+            });
+
+            // Now decide which numbers correspond to L W H.
+            // If tokens length >= 3, take first three as L W H. If exactly 2, ambiguous -> invalid.
+            if (tokens.length < 3) {
+                out.ok = false; out.status = 'Not enough numeric dimensions (need 3)';
+                return out;
+            }
+
+            // Use first three tokens as L,W,H.
+            const L = tokens[0], W = tokens[1], H = tokens[2];
+            out.dims = { lRaw: L.raw, wRaw: W.raw, hRaw: H.raw, unitL: L.unit, unitW: W.unit, unitH: H.unit };
+
+            // Convert to meters (use UNIT_FACTORS)
+            function toMeters(num, unit){
+                const u = (unit||cfg.defaultUnit||'cm').toLowerCase();
+                const mapped = UNIT_FACTORS[u];
+                if (!mapped) return NaN;
+                return Number(num) * mapped;
+            }
+            out.l_m = toMeters(L.num, L.unit);
+            out.w_m = toMeters(W.num, W.unit);
+            out.h_m = toMeters(H.num, H.unit);
+
+            if (![out.l_m,out.w_m,out.h_m].every(v => Number.isFinite(v) && v > 0)) {
+                out.ok = false;
+                out.status = 'Invalid numeric dimension(s)';
+                return out;
+            }
+
+            // CBM calculation
+            out.cbm = out.l_m * out.w_m * out.h_m * (out.qty || 1);
+
+            // Volumetric weight if enabled
+            if (cfg.volEnabled) {
+                const divisor = Number(cfg.defaultDivisor || CONFIG.defaultDivisor || 6000);
+                // volumetric weight formula: (L_cm * W_cm * H_cm) / divisor
+                const l_cm = out.l_m * 100;
+                const w_cm = out.w_m * 100;
+                const h_cm = out.h_m * 100;
+                out.vol_kg = (l_cm * w_cm * h_cm) / divisor * (out.qty || 1);
+            } else {
+                out.vol_kg = 0;
+            }
+
+            // Warnings
+            if (usingDefaultUnit) {
+                out.ok = false;
+                out.status = `No unit detected — assumed ${lastUnit}.`;
+            }
+
+            return out;
+            }
+
+            /* -------------
+            UI & Rendering
+            ------------- */
+
+            const els = {
+            cbmInput: document.getElementById('cbmInput'),
+            defaultUnit: document.getElementById('defaultUnit'),
+            divisor: document.getElementById('divisor'),
+            volToggle: document.getElementById('volToggle'),
+            decimals: document.getElementById('decimals'),
+            resultBody: document.getElementById('resultBody'),
+            totalCbm: document.getElementById('totalCbm'),
+            totalVol: document.getElementById('totalVol'),
+            rowCount: document.getElementById('rowCount'),
+            divDisplay: document.getElementById('divDisplay'),
+            messages: document.getElementById('messages'),
+            copyCsv: document.getElementById('copyCsv'),
+            downloadCsv: document.getElementById('downloadCsv'),
+            clearInput: document.getElementById('clearInput'),
+            sample1: document.getElementById('sample1'),
+            sample2: document.getElementById('sample2'),
+            sample3: document.getElementById('sample3'),
+            runTests: document.getElementById('runTests'),
+            volTotalCard: document.getElementById('volTotalCard'),
+            };
+
+            let lastParseResult = [];
+            let lastCsv = '';
+
+            /* Read UI state into options object */
+            function readOptions(){
+            return {
+                defaultUnit: els.defaultUnit.value || CONFIG.defaultUnit,
+                defaultDivisor: Number(els.divisor.value || CONFIG.defaultDivisor),
+                decimals: Number(els.decimals.value || CONFIG.decimals),
+                volEnabled: els.volToggle.checked,
+                debounceMs: CONFIG.debounceMs,
+            };
+            }
+
+            /* Render parse results */
+            function renderResults(parsed, options){
+            els.resultBody.innerHTML = '';
+            let rows = 0;
+            let totalCbm = 0, totalVol = 0;
+            const decimals = Number(options.decimals);
+
+            // Build CSV lines
+            const csvRows = [];
+            csvRows.push(['raw','qty','l_m','w_m','h_m','cbm_m3','vol_kg','status'].map(csvEscape).join(','));
+
+            for (const lineObj of parsed){
+                const rawShort = safeText(lineObj.rawLine, 40);
+                if (lineObj.components.length === 0) {
+                // code style or aggregated-only
+                const agg = lineObj.aggregated || {cbm:0, vol_kg:0, status:''};
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="truncate">${escapeHtml(rawShort)}</td>
+                                <td>${agg.qty||1}</td>
+                                <td>-</td><td>-</td><td>-</td>
+                                <td>-</td>
+                                <td class="align-right">${formatNum(agg.cbm||0,decimals)}</td>
+                                <td class="align-right">${formatNum(agg.vol_kg||0,2)}</td>
+                                <td><span class="status-warn">${escapeHtml(agg.status||'Info')}</span></td>`;
+                els.resultBody.appendChild(tr);
+                rows++;
+                totalCbm += Number(agg.cbm||0);
+                totalVol += Number(agg.vol_kg||0);
+                csvRows.push([lineObj.rawLine, agg.qty||1, '', '', '', agg.cbm||0, agg.vol_kg||0, agg.status||''].map(csvEscape).join(','));
+                continue;
+                }
+
+                // For each component produce a row (component index shown in status)
+                lineObj.components.forEach((comp, idx) => {
+                const lOrig = comp.dims ? (comp.dims.lRaw || '-') : '-';
+                const wOrig = comp.dims ? (comp.dims.wRaw || '-') : '-';
+                const hOrig = comp.dims ? (comp.dims.hRaw || '-') : '-';
+                const lwhMeters = comp.l_m && comp.w_m && comp.h_m ? `${formatNum(comp.l_m,3)} / ${formatNum(comp.w_m,3)} / ${formatNum(comp.h_m,3)}` : '-';
+                const statusClass = comp.ok ? 'status-ok' : (comp.meta || comp.status || '').toLowerCase().includes('invalid') ? 'status-err' : 'status-warn';
+                const statusText = comp.status || (comp.ok ? 'OK' : 'Warning');
+
+                const tr = document.createElement('tr');
+                if (!comp.ok) tr.classList.add('invalid');
+                tr.innerHTML = `<td class="truncate" title="${escapeHtml(lineObj.rawLine)}">${escapeHtml(rawShort)}</td>
+                                <td>${comp.qty||1}</td>
+                                <td>${escapeHtml(lOrig)}</td>
+                                <td>${escapeHtml(wOrig)}</td>
+                                <td>${escapeHtml(hOrig)}</td>
+                                <td>${escapeHtml(lwhMeters)}</td>
+                                <td class="align-right">${formatNum(comp.cbm||0,decimals)}</td>
+                                <td class="align-right">${formatNum(comp.vol_kg||0,2)}</td>
+                                <td><span class="${statusClass}">${escapeHtml(statusText)}</span>${idx>0?` <span class="muted-small">(part ${idx+1})</span>`:''}</td>`;
+                els.resultBody.appendChild(tr);
+                rows++;
+                totalCbm += Number(comp.cbm || 0);
+                totalVol += Number(comp.vol_kg || 0);
+
+                csvRows.push([lineObj.rawLine, comp.qty||1, comp.l_m||'', comp.w_m||'', comp.h_m||'', comp.cbm||0, comp.vol_kg||0, comp.status||''].map(csvEscape).join(','));
+                });
+            }
+
+            lastCsv = csvRows.join('\n');
+
+            els.rowCount.textContent = rows;
+            els.totalCbm.textContent = `${formatNum(totalCbm, options.decimals)} m³`;
+            els.totalVol.textContent = `${formatNum(totalVol,2)} kg`;
+            els.divDisplay.textContent = options.defaultDivisor;
+            els.volTotalCard.style.display = options.volEnabled ? 'flex' : 'none';
+            lastParseResult = parsed;
+
+            // messages
+            const warnings = [];
+            parsed.forEach(p => {
+                p.components.forEach(c => {
+                if (!c.ok) warnings.push(`${safeText(p.rawLine,40)} → ${c.status}`);
+                });
+                if (p.components.length===0 && p.aggregated && p.aggregated.status) {
+                warnings.push(`${safeText(p.rawLine,40)} → ${p.aggregated.status}`);
+                }
+            });
+            if (warnings.length>0) {
+                els.messages.innerHTML = `<div class="status-warn"><strong>Notes:</strong> ${escapeHtml(warnings.slice(0,4).join(' • '))}${warnings.length>4?` <span class="muted-small">(+${warnings.length-4} more)</span>`:''}</div>`;
+            } else {
+                els.messages.innerHTML = `<div class="muted-small">All lines parsed OK.</div>`;
+            }
+            }
+
+            /* Helper to escape HTML */
+            function escapeHtml(s){
+            if (s===null||s===undefined) return '';
+            return String(s).replace(/[&<>"']/g, function(m){
+                return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]);
+            });
+            }
+
+            /* Parse and render (main) */
+            function doParse(){
+            const options = readOptions();
+            const text = els.cbmInput.value;
+            // Performance: if many lines, parse in chunks (so UI doesn't freeze)
+            const linesCount = text.split(/\r?\n/).filter(Boolean).length;
+            if (linesCount > CONFIG.chunkThreshold) {
+                // chunked processing: simple implementation with setTimeout slices
+                const rawLines = text.split(/\r?\n/);
+                const chunks = [];
+                let idx = 0;
+                const chunkSize = 200;
+                function processChunk(){
+                const slice = rawLines.slice(idx, idx + chunkSize);
+                slice.forEach(line => { if (line.trim()) chunks.push(parseLine(line, options)); });
+                idx += chunkSize;
+                if (idx < rawLines.length) {
+                    // update partial UI row count
+                    renderResults(chunks, options);
+                    setTimeout(processChunk, 10);
+                } else {
+                    renderResults(chunks, options);
+                }
+                }
+                processChunk();
+            } else {
+                const parsed = parseInput(text, options);
+                renderResults(parsed, options);
+            }
+            }
+
+            /* Attach event listeners */
+            const debouncedParse = debounce(doParse, CONFIG.debounceMs);
+
+            els.cbmInput.addEventListener('input', debouncedParse);
+            els.defaultUnit.addEventListener('change', ()=>{debouncedParse();});
+            els.divisor.addEventListener('input', () => { debouncedParse(); });
+            els.volToggle.addEventListener('change', ()=>{debouncedParse();});
+            els.decimals.addEventListener('change', ()=>{debouncedParse();});
+
+            els.copyCsv.addEventListener('click', () => {
+            if (!lastCsv) {
+                navigator.clipboard.writeText('').then(()=>{},()=>{});
+            } else {
+                navigator.clipboard.writeText(lastCsv).then(()=> {
+                els.messages.innerHTML = `<div class="muted-small">CSV copied to clipboard.</div>`;
+                }, ()=> {
+                els.messages.innerHTML = `<div class="status-warn">Copy failed (clipboard may be blocked).</div>`;
+                });
+            }
+            });
+
+            els.downloadCsv.addEventListener('click', () => {
+            const csv = lastCsv || '';
+            const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cbm_export.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            });
+
+            els.clearInput.addEventListener('click', ()=>{
+            els.cbmInput.value = '';
+            doParse();
+            });
+
+            els.sample1.addEventListener('click', ()=>{
+            els.cbmInput.value = `50cm * 40cm * 30cm
+            2 x 50cm x 40cm x 30cm`;
+            doParse();
+            });
+            els.sample2.addEventListener('click', ()=>{
+            els.cbmInput.value = `50 x 40 x 30 cm + 2m * 3m * 4m
+            20in x 10in x 5in
+            3pcs 30cm 20cm 10cm`;
+            doParse();
+            });
+            els.sample3.addEventListener('click', ()=>{
+            els.cbmInput.value = `50cm * 40cm * 30cm
+            2 x 50cm x 40cm x 30cm
+            0.5m * 1m * 2m
+            50 x 40 x 30 cm + 2m * 3m * 4m
+            20in x 10in x 5in
+            3pcs 30cm 20cm 10cm
+            abc def
+            3810082864/KHSC
+            50cm40cm30cm
+            3810081857\\KHSC`;
+            doParse();
+            });
+
+            /* Keyboard: Ctrl+Enter parse */
+            els.cbmInput.addEventListener('keydown', (ev)=>{
+            if ((ev.ctrlKey || ev.metaKey) && ev.key === 'Enter'){
+                doParse();
+            }
+            });
+
+            /* Run simple unit tests and show results */
+            els.runTests.addEventListener('click', runUnitTests);
+
+            /* initial parse with defaults */
+            (function init(){
+            // sync UI with CONFIG
+            els.defaultUnit.value = CONFIG.defaultUnit;
+            els.divisor.value = CONFIG.defaultDivisor;
+            els.decimals.value = CONFIG.decimals;
+            els.volToggle.checked = CONFIG.volEnabled;
+            doParse();
+            })();
+
+            /* -------------
+            Minimal tests / test harness
+            ------------- */
+
+            function runUnitTests(){
+            const options = readOptions();
+            const tests = [
+                {name:'1: 50cm * 40cm * 30cm', input:'50cm * 40cm * 30cm', expectedCbm: 0.06},
+                {name:'2: 2 x 50cm x 40cm x 30cm', input:'2 x 50cm x 40cm x 30cm', expectedCbm: 0.12},
+                {name:'3: 0.5m * 1m * 2m', input:'0.5m * 1m * 2m', expectedCbm: 1.0},
+                {name:'4: 50 x 40 x 30 cm + 2m * 3m * 4m', input:'50 x 40 x 30 cm + 2m * 3m * 4m', expectedCbm: 24.06},
+                {name:'5: 20in x 10in x 5in', input:'20in x 10in x 5in', expectedCbm: 0.0025888},
+                {name:'6: 3pcs 30cm 20cm 10cm', input:'3pcs 30cm 20cm 10cm', expectedCbm: 0.018},
+                {name:'7: invalid abc def', input:'abc def', expectedInvalid:true},
+                {name:'8: mixed codes', input:`3810082864/KHSC
+            50cm40cm30cm
+            3810081857\\KHSC`, expectedMulti:true}
+            ];
+
+            const results = [];
+            for (const t of tests){
+                const parsed = parseInput(t.input, Object.assign({}, CONFIG, options));
+                // Check aggregated CBM total
+                let sumCbm = 0;
+                let invalid = false;
+                parsed.forEach(p => {
+                if (p.components.length === 0) {
+                    // code line => if expectedMulti, we accept it
+                    if (t.expectedInvalid) invalid = true;
+                } else {
+                    p.components.forEach(c => {
+                    if (!c.ok) invalid = true;
+                    sumCbm += (c.cbm || 0);
+                    });
+                }
+                });
+                const pass = t.expectedInvalid ? invalid : (t.expectedMulti ? parsed.length>=3 : Math.abs(sumCbm - t.expectedCbm) <= (Math.max(1e-6, Math.abs(t.expectedCbm)*1e-6)));
+                results.push({test:t.name, pass, sumCbm, parsed});
+            }
+
+            // Show results in messages box
+            const passed = results.filter(r=>r.pass).length;
+            const total = results.length;
+            let html = `<div><strong>Unit tests:</strong> ${passed}/${total} passed.</div><ul>`;
+            for (const r of results){
+                html += `<li style="margin-top:6px"><strong>${escapeHtml(r.test)}</strong> — ${r.pass ? '<span class="status-ok">PASS</span>' : '<span class="status-err">FAIL</span>'}`;
+                if (!r.pass) html += `<div class="muted-small">Computed CBM: ${r.sumCbm}</div>`;
+                html += `</li>`;
+            }
+            html += `</ul>`;
+            els.messages.innerHTML = html;
+            // Also pre-fill input with last failing test's parsed sample for inspection
+            const failed = results.find(r=>!r.pass);
+            if (failed) {
+                // put its parsed content into textarea to allow inspection
+                // do not overwrite user's input by default; only show a button to apply
+                const applyBtn = document.createElement('button');
+                applyBtn.textContent = 'Inspect failing input';
+                applyBtn.className = 'small';
+                applyBtn.addEventListener('click', ()=> {
+                const original = tests.find(t=>t.name===failed.test).input;
+                els.cbmInput.value = original;
+                doParse();
+                });
+                els.messages.appendChild(document.createElement('div')).appendChild(applyBtn);
+            }
+            }
+
+            /* expose parse functions for developer console if needed */
+            window.CBM = {
+            parseInput, parseLine, parseComponent, getLastCsv: ()=> lastCsv
+            };
 
         // --- ARITZIA Formatter Logic ---
         const aritziaInput = document.getElementById("aritziaInput");
@@ -376,8 +1425,396 @@
             aritziaOutput.value = formatText(formattedBlocks.join("\n\n"));
         });
 
+        /*****************************************************************************
+         * PO Formatter implementation (unchanged)
+         *****************************************************************************/
+        const MIN_ANCHOR_DIGITS = 6;
+        function digitsOnly(s) {
+            return (s || '').replace(/\D+/g, '');
+        }
+        function expandSlashSubgroup(rawSubgroup) {
+            const rawTokens = rawSubgroup.split('/').map(t => t.trim()).filter(t => t.length > 0);
+            const tokens = rawTokens.map(t => ({ raw: t, digits: digitsOnly(t) })).filter(t => t.digits.length > 0);
+            if (tokens.length === 0) return [];
+            let anchor = null;
+            if (tokens[0].digits.length >= MIN_ANCHOR_DIGITS) {
+                anchor = tokens[0].digits;
+            } else {
+                const candidates = tokens.filter(t => t.digits.length >= MIN_ANCHOR_DIGITS);
+                if (candidates.length > 0) {
+                    candidates.sort((a,b) => b.digits.length - a.digits.length);
+                    anchor = candidates[0].digits;
+                } else {
+                    return tokens.map(t => t.digits);
+                }
+            }
+            const anchorLen = anchor.length;
+            const expanded = tokens.map(t => {
+                const tok = t.digits;
+                if (tok.length >= anchorLen) {
+                    return tok;
+                } else {
+                    const prefix = anchor.slice(0, anchorLen - tok.length);
+                    return (prefix + tok);
+                }
+            });
+            return expanded;
+        }
+        function processPOInput(rawText) {
+            if (!rawText || typeof rawText !== 'string') return '';
+            const topLevelGroups = rawText
+                .split(/[\n\r,;]+/)
+                .map(g => g.trim())
+                .filter(g => g.length > 0);
+
+            const collected = [];
+            const seen = new Set();
+
+            topLevelGroups.forEach(group => {
+                const parts = group.split(/\s+/).map(p => p.trim()).filter(p => p.length > 0);
+                parts.forEach(part => {
+                    const cleanedPart = part.replace(/^[,;]+|[,;]+$/g, '');
+                    if (cleanedPart.includes('/')) {
+                        const expanded = expandSlashSubgroup(cleanedPart);
+                        expanded.forEach(tok => {
+                            const normalized = digitsOnly(tok);
+                            if (!normalized) return;
+                            if (!seen.has(normalized)) {
+                                seen.add(normalized);
+                                collected.push(normalized);
+                            }
+                        });
+                    } else {
+                        const normalized = digitsOnly(cleanedPart);
+                        if (!normalized) return;
+                        if (!seen.has(normalized)) {
+                            seen.add(normalized);
+                            collected.push(normalized);
+                        }
+                    }
+                });
+            });
+
+            return collected.join(',');
+        }
+
+        // Hook PO processing to UI elements
+        const poInput = document.getElementById('poInput');
+        const poOutput = document.getElementById('poOutput');
+        const poDebug = document.getElementById('poDebug');
+        const runSamplesBtn = document.getElementById('runSamplesBtn');
+
+        function processPOAndRender() {
+            const raw = poInput.value || '';
+            const out = processPOInput(raw);
+            poOutput.value = out;
+            return out;
+        }
+
+        poInput.addEventListener('input', () => {
+            processPOAndRender();
+        });
+
+        runSamplesBtn.addEventListener('click', () => {
+            const samples = [
+                {
+                    name: 'Duplicate removal',
+                    input: '3810083392,3810083406,3810083392',
+                    expected: '3810083392,3810083406'
+                },
+                {
+                    name: 'Simple slash expansion',
+                    input: '536838863/962/292',
+                    expected: '536838863,536838962,536838292'
+                },
+                {
+                    name: 'Long slash expansion + mix',
+                    input: '810083407/392/393/400/401/406',
+                    expected: '810083407,810083392,810083393,810083400,810083401,810083406'
+                }
+            ];
+
+            let debugLines = [];
+            samples.forEach(s => {
+                const actual = (function(){
+                    poInput.value = s.input;
+                    return processPOAndRender();
+                })();
+                const pass = actual === s.expected;
+                debugLines.push(`Test: ${s.name}`);
+                debugLines.push(`Input: ${s.input}`);
+                debugLines.push(`Expected: ${s.expected}`);
+                debugLines.push(`Actual:   ${actual}`);
+                debugLines.push(`PASS: ${pass}`);
+                debugLines.push('-------------------------');
+            });
+
+            poDebug.textContent = debugLines.join('\n');
+        });
+
+        // OCR paste support for PO input
+        poInput.addEventListener('paste', (e) => {
+            const clipboard = e.clipboardData || window.clipboardData;
+            const text = clipboard.getData("text/plain");
+            if (text && text.trim().length > 0) {
+                setTimeout(processPOAndRender, 10);
+            } else {
+                const items = clipboard.items || [];
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type && items[i].type.indexOf('image') !== -1) {
+                        e.preventDefault();
+                        const file = items[i].getAsFile();
+                        processImageFile(file);
+                        break;
+                    }
+                }
+            }
+        });
+
+        // drop support
+        poInput.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                const f = e.dataTransfer.files[0];
+                if (f.type && f.type.indexOf('image') !== -1) {
+                    processImageFile(f);
+                }
+            }
+        });
+        poInput.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        window.addEventListener('load', () => {
+            if (poInput && poInput.value.trim().length > 0) processPOAndRender();
+        });
+
+        /****************************************************************************
+         * Text-to-Columns Implementation (NEW)
+         *
+         * Behavior:
+         * - Robust splitting: supports space, forward slash '/', and backslash '\'
+         * - If a subgroup contains multiple separators (e.g. 123/ABC/XYZ) -> first token = PO, last token = Destination
+         * - Removes stray punctuation, trims, uppercases Destination
+         * - Outputs aligned PO and Dest columns (newline-separated) so copy/paste to Excel works naturally
+         ****************************************************************************/
+
+        const ttcInput = document.getElementById('ttcInput');
+        const ttcPOs = document.getElementById('ttcPOs');
+        const ttcDests = document.getElementById('ttcDests');
+        const ttcInvalid = document.getElementById('ttcInvalid');
+        const ttcSummary = document.getElementById('ttcSummary');
+        const processTTCBtn = document.getElementById('processTTCBtn');
+        const clearTTCInput = document.getElementById('clearTTCInput');
+        const copyPOsBtn = document.getElementById('copyPOs');
+        const copyDestsBtn = document.getElementById('copyDests');
+        const copyCSVBtn = document.getElementById('copyCSV');
+
+        function safeTrim(s) { return (s || '').trim(); }
+
+        // Updated splitter: splits on whitespace OR forward slash OR backslash
+        // If multiple tokens, use first as PO and last as Destination (per request)
+        function splitLineToPOAndDest(line) {
+            // Normalize whitespace sequences to single space, trim
+            const normalized = line.replace(/\t+/g, ' ').replace(/ {2,}/g, ' ').trim();
+            if (!normalized) return null;
+
+            // Split on /, \, or whitespace sequences
+            const tokens = normalized.split(/[\/\\\s]+/).map(t => t.trim()).filter(t => t.length > 0);
+            if (tokens.length === 0) return null;
+
+            // First token => PO, Last token => Destination
+            const rawPo = tokens[0];
+            const rawDest = tokens.length >= 2 ? tokens[tokens.length - 1] : '';
+
+            // Clean tokens: remove surrounding non-alphanumeric (keep digits & letters & hyphen)
+            const po = (rawPo || '').replace(/[^A-Za-z0-9-]/g, '');
+            const dest = (rawDest || '').replace(/[^A-Za-z0-9-]/g, '').toUpperCase();
+
+            return { po: po, dest: dest };
+        }
+
+        function isBlankLine(line) {
+            return !line || line.trim().length === 0;
+        }
+
+        function processTextToColumns() {
+            const raw = ttcInput.value || '';
+            // Keep original line ordering but ignore fully blank lines
+            const lines = raw.split(/\r?\n/);
+            const poList = [];
+            const destList = [];
+            const invalidLines = [];
+
+            lines.forEach((ln, idx) => {
+                if (isBlankLine(ln)) return; // ignore blank
+                const parsed = splitLineToPOAndDest(ln);
+                if (!parsed) return;
+                // If PO is empty after parsing, consider invalid/skipped
+                if (!parsed.po || parsed.po.length === 0) {
+                    invalidLines.push(`Line ${idx+1}: "${ln}" => missing PO`);
+                    return;
+                }
+                poList.push(parsed.po);
+                if (!parsed.dest || parsed.dest.length === 0) {
+                    destList.push(''); // keep alignment with blank dest
+                    invalidLines.push(`Line ${idx+1}: "${ln}" => missing destination`);
+                } else {
+                    destList.push(parsed.dest);
+                }
+            });
+
+            // Populate outputs
+            ttcPOs.value = poList.join('\n');
+            ttcDests.value = destList.join('\n');
+
+            // Show invalid box if any invalid lines
+            if (invalidLines.length > 0) {
+                ttcInvalid.style.display = 'block';
+                ttcInvalid.textContent = 'Lines with missing data:\n' + invalidLines.join('\n');
+            } else {
+                ttcInvalid.style.display = 'none';
+                ttcInvalid.textContent = '';
+            }
+
+            ttcSummary.textContent = `${poList.length} lines processed${invalidLines.length ? ' • ' + invalidLines.length + ' issue(s)' : ''}`;
+            return { poList, destList, invalidLines };
+        }
+
+        // Wire UI events
+        processTTCBtn.addEventListener('click', () => {
+            processTextToColumns();
+        });
+
+        // Also process live on paste / input for convenience
+        ttcInput.addEventListener('input', () => {
+            processTextToColumns();
+        });
+
+        clearTTCInput.addEventListener('click', () => {
+            ttcInput.value = '';
+            ttcPOs.value = '';
+            ttcDests.value = '';
+            ttcInvalid.style.display = 'none';
+            ttcInvalid.textContent = '';
+            ttcSummary.textContent = '0 lines processed';
+        });
+
+        // Copy helper that writes to clipboard and returns a promise
+        function copyToClipboard(text) {
+            if (!navigator.clipboard) {
+                // fallback for older browsers
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    return Promise.resolve();
+                } catch (e) {
+                    document.body.removeChild(ta);
+                    return Promise.reject(e);
+                }
+            }
+            return navigator.clipboard.writeText(text);
+        }
+
+        copyPOsBtn.addEventListener('click', () => {
+            // Ensure latest processing
+            const { poList } = processTextToColumns();
+            if (!poList || poList.length === 0) {
+                copyToClipboard('').then(() => alert('No PO values to copy.'), () => alert('Copy failed.'));
+                return;
+            }
+            const text = poList.join('\n'); // newline-separated -> vertical cells in Excel
+            copyToClipboard(text).then(() => {
+                // small visual feedback (non-blocking)
+                copyPOsBtn.textContent = 'Copied ✓';
+                setTimeout(() => copyPOsBtn.textContent = 'Copy PO', 1200);
+            }, () => alert('Copy failed.'));
+        });
+
+        copyDestsBtn.addEventListener('click', () => {
+            const { destList } = processTextToColumns();
+            if (!destList || destList.length === 0) {
+                copyToClipboard('').then(() => alert('No destination values to copy.'), () => alert('Copy failed.'));
+                return;
+            }
+            const text = destList.join('\n');
+            copyToClipboard(text).then(() => {
+                copyDestsBtn.textContent = 'Copied ✓';
+                setTimeout(() => copyDestsBtn.textContent = 'Copy Dest', 1200);
+            }, () => alert('Copy failed.'));
+        });
+
+        copyCSVBtn.addEventListener('click', () => {
+            const { poList, destList } = processTextToColumns();
+            if (!poList || poList.length === 0) {
+                copyToClipboard('').then(() => alert('No data to copy as CSV.'), () => alert('Copy failed.'));
+                return;
+            }
+            // Build CSV rows, escaping if needed
+            const rows = [];
+            for (let i = 0; i < poList.length; i++) {
+                const p = poList[i] || '';
+                const d = (destList && destList[i]) ? destList[i] : '';
+                // simple quoting if contains comma or quotes or newline
+                const q = v => {
+                    if (v === null || v === undefined) return '';
+                    const s = String(v);
+                    if (s.includes('"')) {
+                        return '"' + s.replace(/"/g, '""') + '"';
+                    }
+                    if (s.includes(',') || s.includes('\n')) {
+                        return '"' + s + '"';
+                    }
+                    return s;
+                };
+                rows.push(q(p) + ',' + q(d));
+            }
+            const csvText = rows.join('\n');
+            copyToClipboard(csvText).then(() => {
+                copyCSVBtn.textContent = 'Copied ✓';
+                setTimeout(() => copyCSVBtn.textContent = 'Copy as CSV', 1200);
+            }, () => alert('Copy failed.'));
+        });
+
+        // Allow dropping an image onto the TTC input to OCR and process (reuses processImageFile)
+        ttcInput.addEventListener('paste', (e) => {
+            const clipboard = e.clipboardData || window.clipboardData;
+            const text = clipboard.getData("text/plain");
+            if (text && text.trim().length > 0) {
+                setTimeout(processTextToColumns, 10);
+            } else {
+                const items = clipboard.items || [];
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type && items[i].type.indexOf('image') !== -1) {
+                        e.preventDefault();
+                        const file = items[i].getAsFile();
+                        processImageFile(file);
+                        break;
+                    }
+                }
+            }
+        });
+
+        ttcInput.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                const f = e.dataTransfer.files[0];
+                if (f.type && f.type.indexOf('image') !== -1) {
+                    processImageFile(f);
+                }
+            }
+        });
+        ttcInput.addEventListener('dragover', (e) => e.preventDefault());
+
+        // Initialize TTC summary on load
+        window.addEventListener('load', () => {
+            ttcSummary.textContent = '0 lines processed';
+        });
+
     </script>
 </body>
-
 </html>
-
