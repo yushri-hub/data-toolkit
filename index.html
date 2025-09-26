@@ -1,627 +1,1208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="icon" type="image/png" href="tips.png">
-    <title>Data Toolkit</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Toolkit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Google Fonts for a professional look */
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
-        /* Color Palette Variables */
+        /* Modern Color Palette */
         :root {
-            --black: #000000;
-            --dark-blue: #14213d;
-            --orange-accent: #fca311;
-            --light-gray: #e5e5e5;
+            --primary-50: #f0f9ff;
+            --primary-100: #e0f2fe;
+            --primary-500: #0ea5e9;
+            --primary-600: #0284c7;
+            --primary-700: #0369a1;
+            --primary-900: #0c4a6e;
+            
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            
+            --success-500: #10b981;
+            --warning-500: #f59e0b;
+            --error-500: #ef4444;
+            
             --white: #ffffff;
-            --muted: #6b7280;
-            --error-bg: #fff1f0;
-            --error-border: #f87171;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
         }
 
-        /* General Body Styles */
-        body {
+        * {
             margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--light-gray);
-            color: var(--dark-blue);
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* --- Header --- */
-        .app-header {
-            background-color: var(--dark-blue);
-            color: var(--white);
-            padding: 20px;
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
         }
 
-        /* --- Tabs --- */
-        .tabs-container {
-            display: flex;
-            justify-content: center;
-            background-color: var(--dark-blue);
-        }
-        .tab {
-            flex-grow: 1;
-            max-width: 250px;
-            padding: 15px 20px;
-            text-align: center;
-            color: var(--white);
-            cursor: pointer;
-            border-bottom: 4px solid transparent;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            font-size: 1.1rem;
-        }
-        .tab:hover {
-            background-color: rgba(255, 255, 255, 0.06);
-        }
-        .tab.active {
-            color: var(--orange-accent);
-            border-bottom: 4px solid var(--orange-accent);
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(8px);
         }
 
-        /* --- Content Area --- */
-        .content-container {
-            padding: 25px;
-            max-width: 1200px;
+        .header-content {
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .tab-content {
-            display: none; /* Hidden by default */
-            animation: fadeIn 0.5s;
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-600);
+            text-decoration: none;
         }
-        .tab-content.active {
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-600);
+            background: var(--primary-50);
+        }
+
+        .nav-link.active {
+            color: var(--primary-600);
+            background: var(--primary-100);
+        }
+
+        /* Page Container */
+        .page {
+            display: none;
+            min-height: calc(100vh - 80px);
+        }
+
+        .page.active {
             display: block;
+            animation: fadeIn 0.3s ease-out;
         }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h2 {
-            border-bottom: 2px solid var(--orange-accent);
-            padding-bottom: 10px;
-            margin-top: 0;
+        /* Home Page */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--white) 100%);
+            padding: 4rem 2rem;
+            text-align: center;
         }
 
-        /* --- Textarea and Input Styles --- */
-        .io-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        textarea {
-            width: 100%;
-            height: 350px;
-            padding: 15px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            resize: vertical;
-            box-sizing: border-box;
-            background-color: var(--white);
-            color: var(--black);
-            font-family: monospace;
-            line-height: 1.45;
-        }
-        textarea:focus {
-            outline: none;
-            border-color: var(--orange-accent);
-            box-shadow: 0 0 8px rgba(252, 163, 17, 0.5);
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        /* OCR Specific Styles */
-        #ocr-status {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #d1ecf1;
-            color: #0c5460;
-            display: none; /* Hidden by default */
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
         }
-        input[type="file"] {
-            margin-bottom: 15px;
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
         }
-        label.file-label {
+
+        .cta-button {
+            background: var(--primary-600);
+            color: var(--white);
+            padding: 0.875rem 2rem;
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            font-weight: 600;
             display: inline-block;
-            padding: 10px 15px;
-            background: var(--orange-accent);
-            color: var(--black);
-            border-radius: 5px;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .cta-button:hover {
+            background: var(--primary-700);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .how-it-works {
+            padding: 4rem 2rem;
+            background: var(--white);
+        }
+
+        .how-it-works-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 3rem;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            background: var(--gray-50);
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .step-number {
+            width: 3rem;
+            height: 3rem;
+            background: var(--primary-600);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin: 0 auto 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .step p {
+            color: var(--gray-600);
+        }
+
+        /* Store Page */
+        .store-header {
+            background: var(--white);
+            padding: 2rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .store-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .store-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .store-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input, .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            background: var(--white);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px var(--primary-100);
+        }
+
+        .tools-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tool-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
         }
-        label.file-label:hover {
-            background: #e0910b;
+
+        .tool-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-200);
         }
-        input[type="file"]#imageInput {
+
+        .tool-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .tool-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .add-tool-btn {
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary-600);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .add-tool-btn:hover {
+            background: var(--primary-700);
+            transform: scale(1.1);
+        }
+
+        .tool-description {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        /* Workspace Page */
+        .workspace {
+            background: var(--white);
+            min-height: calc(100vh - 80px);
+        }
+
+        .workspace-header {
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0;
+        }
+
+        .workspace-tabs {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        .workspace-tab {
+            flex: 1;
+            max-width: 280px;
+            padding: 1rem 1.5rem;
+            background: var(--gray-100);
+            border-right: 1px solid var(--gray-200);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 500;
+            color: var(--gray-600);
+            position: relative;
+        }
+
+        .workspace-tab:hover {
+            background: var(--gray-200);
+        }
+
+        .workspace-tab.active {
+            background: var(--white);
+            color: var(--primary-600);
+            border-bottom: 2px solid var(--primary-600);
+        }
+
+        .workspace-tab.empty {
+            justify-content: center;
+            color: var(--gray-400);
+        }
+
+        .tab-controls {
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .workspace-tab:hover .tab-controls {
+            opacity: 1;
+        }
+
+        .tab-control-btn {
+            width: 1.5rem;
+            height: 1.5rem;
+            background: var(--gray-300);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .tab-control-btn:hover {
+            background: var(--gray-400);
+        }
+
+        .workspace-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        .tool-workspace {
             display: none;
         }
 
-        /* CBM Result Box */
-        .result-box {
-            margin-top: 15px;
-            padding: 15px;
+        .tool-workspace.active {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .tool-header {
+            margin-bottom: 2rem;
+        }
+
+        .tool-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-subtitle {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        /* Tool Layouts */
+        .io-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-section, .output-section {
             background: var(--white);
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            min-height: 50px;
-            white-space: pre-wrap; /* Preserves formatting */
-            font-family: monospace;
-            font-size: 1.1rem;
-            font-weight: bold;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
         }
 
-        /* PO Formatter debug box */
-        .po-debug {
-            margin-top: 12px;
-            padding: 12px;
-            background: #ffffff;
-            border: 1px dashed #ccc;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 0.95rem;
-            white-space: pre-wrap;
-            min-height: 60px;
-        }
-
-        /* Small run-samples button */
-        .run-samples-btn {
-            margin-top: 12px;
-            padding: 10px 14px;
-            background: var(--dark-blue);
-            color: var(--white);
-            border-radius: 6px;
-            cursor: pointer;
-            border: none;
+        .section-label {
             font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 1rem;
+            display: block;
         }
-        .run-samples-btn:hover { opacity: 0.9; }
 
-        /* --- Text-to-Columns specific layout --- */
+        .tool-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            resize: vertical;
+            background: var(--gray-50);
+            transition: all 0.2s ease;
+        }
+
+        .tool-textarea:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px var(--primary-100);
+            background: var(--white);
+        }
+
+        .tool-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .control-input, .control-select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            background: var(--white);
+            transition: all 0.2s ease;
+        }
+
+        .control-input:focus, .control-select:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 2px var(--primary-100);
+        }
+
+        .control-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .control-checkbox input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--primary-600);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-600);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-700);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* CBM Calculator Specific */
+        .cbm-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .cbm-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cbm-card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .table-wrap {
+            overflow: auto;
+            max-height: 500px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+        }
+
+        .cbm-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .cbm-table th,
+        .cbm-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .cbm-table th {
+            background: var(--gray-50);
+            font-weight: 600;
+            color: var(--gray-700);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .cbm-table tr:hover {
+            background: var(--gray-50);
+        }
+
+        .qty-input {
+            width: 60px;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        .qty-input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 2px var(--primary-100);
+        }
+
+        .status-ok { color: var(--success-500); font-weight: 600; }
+        .status-warn { color: var(--warning-500); font-weight: 600; }
+        .status-err { color: var(--error-500); font-weight: 600; }
+
+        .totals {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .total-card {
+            background: var(--primary-50);
+            border: 1px solid var(--primary-200);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .total-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.25rem;
+        }
+
+        .total-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-700);
+        }
+
+        /* Text-to-Columns Layout */
         .ttc-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
+            gap: 2rem;
             align-items: start;
         }
-        .ttc-left {
-            display: flex;
-            flex-direction: column;
-        }
-        .ttc-right {
-            display: grid;
-            grid-template-rows: auto 1fr;
-            gap: 12px;
-        }
+
         .ttc-outputs {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .ttc-controls {
-            display:flex;
-            gap:10px;
-            align-items:center;
-            flex-wrap:wrap;
-        }
-        .btn {
-            padding: 10px 12px;
-            background: var(--dark-blue);
-            color: var(--white);
-            border-radius: 6px;
-            cursor: pointer;
-            border: none;
-            font-weight: 600;
-        }
-        .btn.secondary {
-            background: #ffffff;
-            color: var(--dark-blue);
-            border: 1px solid #cfcfcf;
-        }
-        .small-note {
-            color: var(--muted);
-            font-size: 0.9rem;
-        }
-        .invalid-box {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 6px;
-            background: var(--error-bg);
-            border: 1px solid var(--error-border);
-            color: var(--dark-blue);
-            font-family: monospace;
-            font-size: 0.9rem;
-            max-height: 120px;
-            overflow: auto;
-            white-space: pre-wrap;
+            gap: 1rem;
         }
 
-        /* Responsive design for smaller screens */
-        @media (max-width: 768px) {
-            .io-grid {
-                grid-template-columns: 1fr;
-            }
+        /* File Upload */
+        .file-upload {
+            margin-bottom: 1rem;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-600);
+            color: var(--white);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .file-label:hover {
+            background: var(--primary-700);
+            transform: translateY(-1px);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .ocr-status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            background: var(--primary-50);
+            border: 1px solid var(--primary-200);
+            color: var(--primary-700);
+            display: none;
+        }
+
+        /* Messages */
+        .messages {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .io-grid,
+            .cbm-grid,
             .ttc-container {
                 grid-template-columns: 1fr;
             }
+            
+            .workspace-content {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
+            }
+            
+            .nav {
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .workspace-content {
+                padding: 1rem;
+            }
+            
+            .tool-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
             .ttc-outputs {
                 grid-template-columns: 1fr;
             }
-            .app-header {
-                font-size: 1.8rem;
-            }
-            .tab {
-                font-size: 1rem;
-            }
         }
 
-        /* START: NEW CBM component styles - merge into existing <style> (keeps old palette) */
-        :root {
-        /* reuse existing palette, but add a couple of helpers if missing */
-        --cbm-bg: #ffffff;
-        --cbm-card-shadow: 0 6px 18px rgba(20,33,61,0.04);
-        --cbm-accent: var(--dark-blue);
-        --cbm-muted: var(--muted);
-        --cbm-danger: var(--error-border);
-        --cbm-ok: #10b981;
-        --cbm-radius: 10px;
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
         }
 
-        /* Scope everything under #cbm to avoid selector collision with other tabs */
-        #cbm .cbm-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 18px;
-        align-items: start;
-        }
-        #cbm .cbm-card {
-        background: var(--cbm-bg);
-        border-radius: var(--cbm-radius);
-        padding: 14px;
-        box-shadow: var(--cbm-card-shadow);
-        border: 1px solid #eef2ff;
-        }
-        #cbm h1, #cbm h2 {
-        margin: 0 0 10px 0;
-        font-size: 1.05rem;
-        color: var(--dark-blue);
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        /* textarea in CBM: keep same look as site textareas but slightly smaller */
-        #cbm textarea {
-        width: 100%;
-        min-height: 220px;
-        max-height: 520px;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #d1d5db;
-        font-family: monospace;
-        font-size: 14px;
-        line-height: 1.4;
-        box-sizing: border-box;
-        background: var(--white);
-        color: var(--black);
-        resize: vertical;
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
-        /* Controls row (uses your existing .ttc-controls / .btn look & feel) */
-        #cbm .cbm-controls {
-        display:flex;
-        flex-wrap:wrap;
-        gap:10px;
-        align-items:center;
-        margin-top:10px;
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .font-mono { font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace; }
+        .truncate { 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+            max-width: 200px;
         }
-        #cbm .cbm-controls label { font-size:0.9rem; color:var(--cbm-muted); display:block; }
-        #cbm select, #cbm input[type="number"], #cbm input[type="checkbox"] {
-        margin-top:6px;
-        padding:6px 8px;
-        border:1px solid #d1d5db;
-        border-radius:6px;
-        background:var(--white);
-        font-size:0.95rem;
+        .muted-small { 
+            font-size: 0.75rem; 
+            color: var(--gray-500); 
         }
-
-        /* Buttons consistent with site .btn but slightly smaller */
-        #cbm .btn-small {
-        padding:6px 10px;
-        border-radius:6px;
-        background: var(--dark-blue);
-        color: var(--white);
-        border: none;
-        font-weight:600;
-        cursor:pointer;
-        }
-        #cbm .btn-ghost {
-        background: transparent;
-        color: var(--dark-blue);
-        border: 1px solid #e6e9ef;
-        }
-
-        /* Table and result preview */
-        #cbm .table-wrap {
-        overflow:auto;
-        max-height:460px;
-        border-radius:8px;
-        margin-top:8px;
-        border:1px solid #eef2ff;
-        background:var(--white);
-        }
-        #cbm table {
-        width:100%;
-        border-collapse:collapse;
-        font-size:13px;
-        }
-        #cbm th, #cbm td {
-        padding:8px 10px;
-        border-bottom:1px solid #f1f5f9;
-        text-align:left;
-        }
-        #cbm th {
-        position:sticky;
-        top:0;
-        background: #ffffff;
-        z-index:2;
-        }
-
-        /* Status styles */
-        #cbm .status-ok { color: var(--cbm-ok); font-weight:600; }
-        #cbm .status-warn { color: #d97706; font-weight:600; }
-        #cbm .status-err { color: var(--cbm-danger); font-weight:700; }
-
-        /* Totals */
-        #cbm .totals { display:flex; gap:14px; flex-wrap:wrap; margin-top:12px; align-items:center; }
-        #cbm .tot-card { background:#fbfdff; border-radius:8px; padding:10px; border:1px solid #eef6ff; }
-
-        /* Small helpers */
-        #cbm .muted-small { font-size:12px; color:var(--cbm-muted); }
-        #cbm .truncate { max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:inline-block; vertical-align:middle; }
-
-        /* Responsive: keep the same responsive break as the rest of your site */
-        @media (max-width: 900px) {
-        #cbm .cbm-grid { grid-template-columns: 1fr; }
-        }
-        #cbm .kbd { border:1px solid #e6ecf8; padding:2px 6px; border-radius:6px; background:#fff; font-size:12px; }
-
-        /* END: NEW CBM component styles */
-
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo" onclick="showPage('home')">Master Toolkit</a>
+            <nav class="nav">
+                <a href="#" class="nav-link active" onclick="showPage('home')">Home</a>
+                <a href="#" class="nav-link" onclick="showPage('store')">Store</a>
+                <a href="#" class="nav-link" onclick="showPage('workspace')">Workspace</a>
+            </nav>
+        </div>
+    </header>
 
-    <header class="app-header">Data Toolkit</header>
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Master Toolkit</h1>
+                <p>Your comprehensive suite of professional tools for data processing, formatting, and analysis. Streamline your workflow with our powerful, easy-to-use utilities.</p>
+                <a href="#" class="cta-button" onclick="showPage('store')">Explore Tools</a>
+            </div>
+        </section>
 
-    <div class="tabs-container">
-        <div class="tab active" onclick="openTab('formatter')">Text Formatter</div>
-        <div class="tab" onclick="openTab('cbm')">CBM Calculator</div>
-        <div class="tab" onclick="openTab('aritzia')">ARITZIA Formatter</div>
-        <!-- PO Formatter tab (4th tab) -->
-        <div class="tab" onclick="openTab('poformatter')">PO Formatter</div>
-        <!-- NEW: Text-to-Columns tab (5th tab) -->
-        <div class="tab" onclick="openTab('texttocolumns')">Text-to-Columns</div>
+        <section class="how-it-works">
+            <div class="how-it-works-content">
+                <h2>How It Works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Discover Tools</h3>
+                        <p>Browse our comprehensive store of professional tools designed for various data processing and formatting tasks.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Add to Workspace</h3>
+                        <p>Select the tools you need and add them to your personalized workspace for easy access and efficient workflow.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Process & Export</h3>
+                        <p>Use the tools with intuitive interfaces, process your data, and export results in various formats for your projects.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <div class="content-container">
-
-        <div id="formatter" class="tab-content active">
-            <h2>Universal Text Formatter</h2>
-            <p>Paste text below, or paste/upload an image to extract text using OCR.</p>
-            <label for="imageInput" class="file-label">Choose Image File</label>
-            <input type="file" id="imageInput" accept="image/*">
-            <div id="ocr-status"></div>
-
-            <div class="io-grid">
-                <textarea id="inputBox" placeholder="Input: Paste text or an image here..."></textarea>
-                <textarea id="outputBox" placeholder="Output..."></textarea>
-            </div>
-        </div>
-
-        <!-- START: REPLACED CBM COMPONENT - replace your old <div id="cbm"> ... </div> with this block -->
-        <div id="cbm" class="tab-content">
-        <h2>CBM Calculator</h2>
-        <p>Enter dimensions per line. Supports many formats (cm, m, mm, in, ft), quantities, and + sums.</p>
-
-        <div class="cbm-grid" style="margin-top:12px">
-            <!-- LEFT: Input card -->
-            <section class="cbm-card" aria-labelledby="cbm-input-title">
-            <h1 id="cbm-input-title">CBM Input</h1>
-            <label for="cbmInput" class="muted-small">Paste or type many lines (one item per line).</label>
-            <textarea id="cbmInput" aria-describedby="input-hint" placeholder="e.g. 50cm * 40cm * 30cm&#10;2 x 50cm x 40cm x 30cm&#10;50 x 40 x 30 cm + 2m * 3m * 4m"></textarea>
-
-            <div class="cbm-controls" style="margin-top:8px">
-                <div>
-                <label class="muted-small">Default unit
-                    <select id="defaultUnit" aria-label="Default unit">
-                    <option value="cm">cm (default)</option>
-                    <option value="m">m</option>
-                    <option value="mm">mm</option>
-                    <option value="in">in</option>
-                    <option value="ft">ft</option>
+    <!-- Store Page -->
+    <div id="store" class="page">
+        <div class="store-header">
+            <div class="store-header-content">
+                <h1 class="store-title">Tool Store</h1>
+                <div class="store-controls">
+                    <input type="text" id="toolSearch" class="search-input" placeholder="Search tools..." onkeyup="filterTools()">
+                    <select id="categoryFilter" class="filter-select" onchange="filterTools()">
+                        <option value="">All Categories</option>
+                        <option value="formatting">Text Formatting</option>
+                        <option value="calculation">Calculations</option>
+                        <option value="conversion">Data Conversion</option>
                     </select>
-                </label>
-                </div>
-
-                <div>
-                <label class="muted-small">Volumetric weight
-                    <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
-                    <input id="volToggle" type="checkbox" checked aria-label="Toggle volumetric weight"/><span class="muted-small">enabled</span>
-                    </div>
-                </label>
-                </div>
-
-                <div>
-                <label class="muted-small">Divisor
-                    <input id="divisor" type="number" min="100" step="1" value="6000" aria-label="Volumetric divisor" style="width:110px"/>
-                </label>
-                </div>
-
-                <div>
-                <label class="muted-small">CBM decimals
-                    <input id="decimals" type="number" min="0" max="6" step="1" value="3" aria-label="CBM decimal places" style="width:80px"/>
-                </label>
-                </div>
-
-                <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
-                <button id="copyCsv" class="btn-small">Copy CSV</button>
-                <button id="downloadCsv" class="btn-small">Download CSV</button>
-                <button id="clearInput" class="btn-small btn-ghost">Clear</button>
-                </div>
-            </div>
-
-            <div class="muted-small" id="input-hint" style="margin-top:10px">
-                Live parsing. Use <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> to parse immediately.
-            </div>
-
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-                <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <button id="sample1" class="btn-small small">Sample 1</button>
-                <button id="sample2" class="btn-small small">Sample 2</button>
-                <button id="sample3" class="btn-small small">Test set</button>
-                <button id="runTests" class="btn-small small">Run unit tests</button>
-                </div>
-                <div class="muted-small">Ambiguous lines will show a warning.</div>
-            </div>
-            </section>
-
-            <!-- RIGHT: Preview card -->
-            <section class="cbm-card" aria-labelledby="cbm-preview-title">
-            <h1 id="cbm-preview-title">Parsed Preview</h1>
-
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-                <div class="muted-small">Rows parsed: <strong id="rowCount">0</strong></div>
-                <div class="muted-small">Divisor: <strong id="divDisplay">6000</strong></div>
-            </div>
-
-            <div class="table-wrap" role="region" aria-live="polite" aria-label="Parsed rows" style="margin-top:8px">
-                <table id="resultTable" aria-describedby="tableDesc">
-                <thead>
-                    <tr>
-                    <th>Raw</th>
-                    <th>Qty</th>
-                    <th>L (orig)</th>
-                    <th>W (orig)</th>
-                    <th>H (orig)</th>
-                    <th>L/W/H (m)</th>
-                    <th class="align-right">CBM (m³)</th>
-                    <th class="align-right">Vol (kg)</th>
-                    <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="resultBody"></tbody>
-                </table>
-            </div>
-
-            <div class="totals" aria-hidden="false">
-                <div class="tot-card">
-                <div class="muted-small">Total CBM</div>
-                <div id="totalCbm" style="font-weight:700;font-size:18px">0.000 m³</div>
-                </div>
-
-                <div class="tot-card" id="volTotalCard" style="display:flex;flex-direction:column;align-items:flex-start">
-                <div class="muted-small">Total Volumetric Weight</div>
-                <div id="totalVol" style="font-weight:700;font-size:18px">0.00 kg</div>
-                </div>
-            </div>
-
-            <div id="messages" role="status" aria-live="polite" style="margin-top:10px" class="muted-small"></div>
-            </section>
-        </div>
-        </div>
-        <!-- END: REPLACED CBM COMPONENT -->
-
-
-        <div id="aritzia" class="tab-content">
-            <h2>ARITZIA Formatter</h2>
-            <p>Paste tab-separated data below. Format: PO [tab] ARTICLE [tab] STYLE [tab] DESCRIPTION</p>
-            <div class="io-grid">
-                <textarea id="aritziaInput" placeholder="Paste ARITZIA data here..."></textarea>
-                <textarea id="aritziaOutput" placeholder="Formatted output will appear here..."></textarea>
-            </div>
-        </div>
-
-        <!-- PO Formatter content (4th tab) -->
-        <div id="poformatter" class="tab-content">
-            <h2>PO Formatter</h2>
-            <p>Paste PO numbers, groups (slashes), commas, semicolons, or upload an image that contains PO data. Output is a single line, comma-separated, no spaces, with duplicates removed and slash-groups expanded.</p>
-            <div class="io-grid">
-                <textarea id="poInput" placeholder="Paste POs here... Examples:&#10;536838863/962/292&#10;3810083392,3810083406,3810083392&#10;810083407/392/393/400/401/406"></textarea>
-                <textarea id="poOutput" placeholder="Formatted output will appear here..." readonly></textarea>
-            </div>
-
-            <button class="run-samples-btn" id="runSamplesBtn">Run Samples</button>
-            <div id="poDebug" class="po-debug"></div>
-        </div>
-
-        <!-- NEW: Text-to-Columns tab (5th tab) -->
-        <div id="texttocolumns" class="tab-content">
-            <h2>Text-to-Columns</h2>
-            <p>Paste lines that contain a PO number and a destination code (space/tab/slash/backslash separated). Example:<br>
-               <code>536372836 KHSCH</code></p>
-
-            <div class="ttc-container">
-                <div class="ttc-left">
-                    <label class="small-note">Input (paste multiple lines here):</label>
-                    <textarea id="ttcInput" placeholder="Example:&#10;536372836 KHSCH&#10;536372363/KHSCH&#10;536372383\KHSC"></textarea>
-
-                    <div style="margin-top:10px" class="ttc-controls">
-                        <button class="btn" id="processTTCBtn">Process</button>
-                        <button class="btn secondary" id="clearTTCInput">Clear</button>
-                        <div style="flex:1"></div>
-                        <div class="small-note" id="ttcSummary">0 lines processed</div>
-                    </div>
-
-                    <div id="ttcInvalid" class="invalid-box" style="display:none;"></div>
-                </div>
-
-                <div class="ttc-right">
-                    <div class="ttc-controls" style="justify-content: space-between;">
-                        <div>
-                            <button class="btn" id="copyPOs">Copy PO</button>
-                            <button class="btn" id="copyDests">Copy Dest</button>
-                            <button class="btn" id="copyCSV">Copy as CSV</button>
-                        </div>
-                        <div class="small-note">Outputs are aligned by row. Copy & paste directly into Excel.</div>
-                    </div>
-
-                    <div class="ttc-outputs">
-                        <div>
-                            <label class="small-note">PO# (left column)</label>
-                            <textarea id="ttcPOs" readonly placeholder="POs will appear here..."></textarea>
-                        </div>
-                        <div>
-                            <label class="small-note">Destination (right column)</label>
-                            <textarea id="ttcDests" readonly placeholder="Destinations will appear here..."></textarea>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
+        <div class="tools-grid">
+            <div class="tool-card" data-tool-id="text-formatter" data-categories="formatting" data-tags="text,format,uppercase">
+                <div class="tool-card-header">
+                    <span class="tool-name">Text Formatter</span>
+                    <button class="add-tool-btn" onclick="addToolToWorkspace('text-formatter')" title="Add to Workspace">+</button>
+                </div>
+                <p class="tool-description">Format and clean text data with capitalization, spacing, and OCR support for images.</p>
+            </div>
+
+            <div class="tool-card" data-tool-id="cbm-calculator" data-categories="calculation" data-tags="cbm,volume,shipping">
+                <div class="tool-card-header">
+                    <span class="tool-name">CBM Calculator</span>
+                    <button class="add-tool-btn" onclick="addToolToWorkspace('cbm-calculator')" title="Add to Workspace">+</button>
+                </div>
+                <p class="tool-description">Calculate cubic meters and volumetric weight for shipping with support for multiple units and formats.</p>
+            </div>
+
+            <div class="tool-card" data-tool-id="aritzia-formatter" data-categories="formatting" data-tags="aritzia,format,po">
+                <div class="tool-card-header">
+                    <span class="tool-name">ARITZIA Formatter</span>
+                    <button class="add-tool-btn" onclick="addToolToWorkspace('aritzia-formatter')" title="Add to Workspace">+</button>
+                </div>
+                <p class="tool-description">Format ARITZIA purchase order data with proper structure and organization.</p>
+            </div>
+
+            <div class="tool-card" data-tool-id="po-formatter" data-categories="formatting" data-tags="po,purchase,order">
+                <div class="tool-card-header">
+                    <span class="tool-name">PO Formatter</span>
+                    <button class="add-tool-btn" onclick="addToolToWorkspace('po-formatter')" title="Add to Workspace">+</button>
+                </div>
+                <p class="tool-description">Process and format purchase order numbers with expansion and duplicate removal.</p>
+            </div>
+
+            <div class="tool-card" data-tool-id="text-to-columns" data-categories="conversion" data-tags="text,columns,split">
+                <div class="tool-card-header">
+                    <span class="tool-name">Text-to-Columns</span>
+                    <button class="add-tool-btn" onclick="addToolToWorkspace('text-to-columns')" title="Add to Workspace">+</button>
+                </div>
+                <p class="tool-description">Split text data into columns for easy Excel import with PO and destination code separation.</p>
+            </div>
+        </div>
     </div>
+
+    <!-- Workspace Page -->
+    <div id="workspace" class="page">
+        <div class="workspace">
+            <div class="workspace-header">
+                <div class="workspace-tabs">
+                    <div class="workspace-tab active" data-slot="0" onclick="switchWorkspaceTab(0)">
+                        <span>Empty Slot</span>
+                        <div class="tab-controls">
+                            <button class="tab-control-btn" onclick="removeToolFromSlot(0)" title="Remove">×</button>
+                        </div>
+                    </div>
+                    <div class="workspace-tab empty" data-slot="1" onclick="switchWorkspaceTab(1)">
+                        <span>+ Add Tool</span>
+                    </div>
+                    <div class="workspace-tab empty" data-slot="2" onclick="switchWorkspaceTab(2)">
+                        <span>+ Add Tool</span>
+                    </div>
+                    <div class="workspace-tab empty" data-slot="3" onclick="switchWorkspaceTab(3)">
+                        <span>+ Add Tool</span>
+                    </div>
+                    <div class="workspace-tab empty" data-slot="4" onclick="switchWorkspaceTab(4)">
+                        <span>+ Add Tool</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="workspace-content">
+                <!-- Text Formatter Workspace -->
+                <div id="text-formatter-workspace" class="tool-workspace">
+                    <div class="tool-header">
+                        <h2 class="tool-title">Text Formatter</h2>
+                        <p class="tool-subtitle">Format and clean text data with capitalization and OCR support</p>
+                    </div>
+
+                    <div class="tool-controls">
+                        <div class="file-upload">
+                            <label for="imageInput" class="file-label">Upload Image</label>
+                            <input type="file" id="imageInput" class="file-input" accept="image/*">
+                        </div>
+                        <div class="control-checkbox">
+                            <input type="checkbox" id="capitalizeToggle" checked>
+                            <label for="capitalizeToggle" class="control-label">Capitalize text</label>
+                        </div>
+                    </div>
+
+                    <div id="ocr-status" class="ocr-status"></div>
+
+                    <div class="io-grid">
+                        <div class="input-section">
+                            <label class="section-label">Input</label>
+                            <textarea id="inputBox" class="tool-textarea" placeholder="Paste text or upload an image here..."></textarea>
+                        </div>
+                        <div class="output-section">
+                            <label class="section-label">Output</label>
+                            <textarea id="outputBox" class="tool-textarea" placeholder="Formatted output will appear here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CBM Calculator Workspace -->
+                <div id="cbm-calculator-workspace" class="tool-workspace">
+                    <div class="tool-header">
+                        <h2 class="tool-title">CBM Calculator</h2>
+                        <p class="tool-subtitle">Calculate cubic meters and volumetric weight with editable quantities</p>
+                    </div>
+
+                    <div class="cbm-grid">
+                        <div class="cbm-card">
+                            <h2>Input Dimensions</h2>
+                            <label class="section-label">Enter dimensions per line (supports cm, m, mm, in, ft)</label>
+                            <textarea id="cbmInput" class="tool-textarea" placeholder="e.g. 50cm * 40cm * 30cm&#10;2 x 50cm x 40cm x 30cm&#10;50 x 40 x 30 cm + 2m * 3m * 4m"></textarea>
+
+                            <div class="tool-controls" style="margin-top: 1rem; margin-bottom: 0;">
+                                <div class="control-group">
+                                    <label class="control-label">Default Unit</label>
+                                    <select id="defaultUnit" class="control-select">
+                                        <option value="cm">cm (default)</option>
+                                        <option value="m">m</option>
+                                        <option value="mm">mm</option>
+                                        <option value="in">in</option>
+                                        <option value="ft">ft</option>
+                                    </select>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">CBM Decimals</label>
+                                    <input id="decimals" type="number" min="0" max="6" step="1" value="3" class="control-input" style="width: 80px">
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label">Volumetric Divisor</label>
+                                    <input id="divisor" type="number" min="100" step="1" value="6000" class="control-input" style="width: 110px">
+                                </div>
+
+                                <div class="control-checkbox">
+                                    <input id="volToggle" type="checkbox" checked>
+                                    <label class="control-label">Enable volumetric weight</label>
+                                </div>
+
+                                <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                                    <button id="copyCsv" class="btn btn-primary btn-small">Copy CSV</button>
+                                    <button id="clearInput" class="btn btn-secondary btn-small">Clear</button>
+                                </div>
+                            </div>
+
+                            <div class="muted-small" style="margin-top: 1rem;">
+                                Live parsing. Use <kbd style="padding: 2px 6px; background: var(--gray-100); border-radius: 4px; font-size: 0.75rem;">Ctrl+Enter</kbd> to parse immediately.
+                            </div>
+                        </div>
+
+                        <div class="cbm-card">
+                            <h2>Results</h2>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <div class="muted-small">Rows parsed: <strong id="rowCount">0</strong></div>
+                                <div class="muted-small">Divisor: <strong id="divDisplay">6000</strong></div>
+                            </div>
+
+                            <div class="table-wrap">
+                                <table id="resultTable" class="cbm-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Raw</th>
+                                            <th>Qty</th>
+                                            <th>L (orig)</th>
+                                            <th>W (orig)</th>
+                                            <th>H (orig)</th>
+                                            <th>L/W/H (m)</th>
+                                            <th class="text-right">CBM (m³)</th>
+                                            <th class="text-right">Vol (kg)</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="resultBody"></tbody>
+                                </table>
+                            </div>
+
+                            <div class="totals">
+                                <div class="total-card">
+                                    <div class="total-label">Total CBM</div>
+                                    <div id="totalCbm" class="total-value">0.000 m³</div>
+                                </div>
+                                <div class="total-card" id="volTotalCard">
+                                    <div class="total-label">Total Volumetric Weight</div>
+                                    <div id="totalVol" class="total-value">0.00 kg</div>
+                                </div>
+                            </div>
+
+                            <div id="messages" class="messages" style="margin-top: 1rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ARITZIA Formatter Workspace -->
+                <div id="aritzia-formatter-workspace" class="tool-workspace">
+                    <div class="tool-header">
+                        <h2 class="tool-title">ARITZIA Formatter</h2>
+                        <p class="tool-subtitle">Format tab-separated ARITZIA data: PO [tab] ARTICLE [tab] STYLE [tab] DESCRIPTION</p>
+                    </div>
+
+                    <div class="io-grid">
+                        <div class="input-section">
+                            <label class="section-label">Input (Tab-separated data)</label>
+                            <textarea id="aritziaInput" class="tool-textarea" placeholder="Paste ARITZIA data here..."></textarea>
+                        </div>
+                        <div class="output-section">
+                            <label class="section-label">Formatted Output</label>
+                            <textarea id="aritziaOutput" class="tool-textarea" placeholder="Formatted output will appear here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PO Formatter Workspace -->
+                <div id="po-formatter-workspace" class="tool-workspace">
+                    <div class="tool-header">
+                        <h2 class="tool-title">PO Formatter</h2>
+                        <p class="tool-subtitle">Process PO numbers with slash expansion and duplicate removal</p>
+                    </div>
+
+                    <div class="io-grid">
+                        <div class="input-section">
+                            <label class="section-label">Input PO Numbers</label>
+                            <textarea id="poInput" class="tool-textarea" placeholder="Paste POs here... Examples:&#10;536838863/962/292&#10;3810083392,3810083406,3810083392&#10;810083407/392/393/400/401/406"></textarea>
+                        </div>
+                        <div class="output-section">
+                            <label class="section-label">Formatted Output</label>
+                            <textarea id="poOutput" class="tool-textarea" placeholder="Formatted output will appear here..." readonly></textarea>
+                        </div>
+                    </div>
+
+                    <div class="tool-controls">
+                        <button class="btn btn-primary" id="runSamplesBtn">Run Test Samples</button>
+                        <button class="btn btn-primary" id="copyPOs">Copy PO Numbers</button>
+                    </div>
+
+                    <div id="poDebug" class="messages font-mono" style="white-space: pre-wrap;"></div>
+                </div>
+
+                <!-- Text-to-Columns Workspace -->
+                <div id="text-to-columns-workspace" class="tool-workspace">
+                    <div class="tool-header">
+                        <h2 class="tool-title">Text-to-Columns</h2>
+                        <p class="tool-subtitle">Split text into PO and destination columns for Excel import</p>
+                    </div>
+
+                    <div class="ttc-container">
+                        <div class="input-section">
+                            <label class="section-label">Input (Multiple lines)</label>
+                            <textarea id="ttcInput" class="tool-textarea" placeholder="Example:&#10;536372836 KHSCH&#10;536372363/KHSCH&#10;536372383\KHSC"></textarea>
+
+                            <div class="tool-controls" style="margin-top: 1rem; margin-bottom: 0;">
+                                <button class="btn btn-primary" id="processTTCBtn">Process</button>
+                                <button class="btn btn-secondary" id="clearTTCInput">Clear</button>
+                                <div style="flex: 1;"></div>
+                                <div class="muted-small" id="ttcSummary">0 lines processed</div>
+                            </div>
+
+                            <div id="ttcInvalid" class="messages" style="display: none; margin-top: 1rem; background: var(--error-50); border-color: var(--error-200); color: var(--error-700);"></div>
+                        </div>
+
+                        <div>
+                            <div class="tool-controls" style="justify-content: space-between; margin-bottom: 1rem;">
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button class="btn btn-primary btn-small" id="copyPOs">Copy PO</button>
+                                    <button class="btn btn-primary btn-small" id="copyCSV">Copy as CSV</button>
+                                </div>
+                                <div class="muted-small">Copy & paste directly into Excel</div>
+                            </div>
+
+                            <div class="ttc-outputs">
+                                <div class="output-section">
+                                    <label class="section-label">PO Numbers</label>
+                                    <textarea id="ttcPOs" class="tool-textarea" readonly placeholder="POs will appear here..."></textarea>
+                                </div>
+                                <div class="output-section">
+                                    <label class="section-label">Destinations</label>
+                                    <textarea id="ttcDests" class="tool-textarea" readonly placeholder="Destinations will appear here..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty Workspace -->
+                <div id="empty-workspace" class="tool-workspace active">
+                    <div class="tool-header">
+                        <h2 class="tool-title">Welcome to Your Workspace</h2>
+                        <p class="tool-subtitle">Add tools from the store to get started</p>
+                    </div>
+                    <div style="text-align: center; padding: 4rem 2rem;">
+                        <div style="font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem;">⚡</div>
+                        <p style="color: var(--gray-500); margin-bottom: 2rem;">Your workspace is empty. Visit the store to add tools and start working.</p>
+                        <a href="#" class="btn btn-primary" onclick="showPage('store')">Browse Tools</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tesseract.js for OCR functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 
     <script>
         // --- Core Formatting Logic (reused by other functions) ---
         function formatText(text) {
             if (!text || typeof text !== "string") return "";
 
-            return text
-                .toUpperCase()                           // Convert to uppercase
+            const capitalize = document.getElementById("capitalizeToggle")?.checked;
+
+            let result = text
                 .split("\n")                             // Split into lines
-                .map(line => line.trim())                // Trim spaces from each line
-                .filter(line => line.length > 0)         // Remove blank lines
-                .join("\n")                              // Rejoin with line breaks
-                .replace(/\t+/g, " ")                    // Replace tabs with single space
-                .replace(/ {2,}/g, " ");                 // Collapse multiple spaces
+                .map(line => line.trim())                // Trim spaces
+                .filter(line => line.length > 0)         // Remove blanks
+                .join("\n")                              // Rejoin
+                .replace(/\t+/g, " ")                    // Replace tabs with space
+                .replace(/ {2,}/g, " ");                 // Collapse spaces
+
+            if (capitalize) {
+                result = result.toUpperCase();           // Capitalize only if checked
+            }
+
+            return result;
         }
 
         // --- Tab Switching Logic ---
@@ -646,75 +1227,96 @@
         const imageInput = document.getElementById("imageInput");
         const ocrStatus = document.getElementById("ocr-status");
 
-        inputBox.addEventListener("input", () => {
-            outputBox.value = formatText(inputBox.value);
-        });
-        
-        outputBox.addEventListener("input", () => {
-            // Allows manual editing of the output without affecting the input
-        });
+        if (inputBox && outputBox) {
+            inputBox.addEventListener("input", () => {
+                outputBox.value = formatText(inputBox.value);
+            });
+            
+            outputBox.addEventListener("input", () => {
+                // Allows manual editing of the output without affecting the input
+            });
+        }
 
         const processImageFile = (file) => {
             if (!file) return;
-            ocrStatus.style.display = 'block';
-            ocrStatus.textContent = 'Processing image... This may take a moment.';
+            if (ocrStatus) {
+                ocrStatus.style.display = 'block';
+                ocrStatus.textContent = 'Processing image... This may take a moment.';
+            }
 
             Tesseract.recognize(file, 'eng', {
                 logger: m => console.log(m) // Logs progress to the console
             }).then(({ data: { text } }) => {
-                inputBox.value = text;
-                outputBox.value = formatText(text); // Trigger formatting for Text Formatter
+                if (inputBox) {
+                    inputBox.value = text;
+                    outputBox.value = formatText(text); // Trigger formatting for Text Formatter
+                }
 
                 // If the PO tab is active and element exists, populate it (PO Formatter integration)
                 const poInputEl = document.getElementById('poInput');
-                const activePoTab = document.getElementById('poformatter');
+                const activePoTab = document.getElementById('po-formatter-workspace');
                 if (poInputEl && activePoTab && activePoTab.classList.contains('active')) {
                     poInputEl.value = text;
                     processPOAndRender();
                 }
 
                 // Also if Text-to-Columns tab active, populate its input and process
-                const ttcEl = document.getElementById('texttocolumns');
+                const ttcEl = document.getElementById('text-to-columns-workspace');
                 const ttcInput = document.getElementById('ttcInput');
                 if (ttcInput && ttcEl && ttcEl.classList.contains('active')) {
                     ttcInput.value = text;
                     processTextToColumns();
                 }
 
-                ocrStatus.textContent = 'Image processing complete!';
-                setTimeout(() => { ocrStatus.style.display = 'none'; }, 2500);
+                if (ocrStatus) {
+                    ocrStatus.textContent = 'Image processing complete!';
+                    setTimeout(() => { ocrStatus.style.display = 'none'; }, 2500);
+                }
             }).catch(err => {
                 console.error(err);
-                ocrStatus.textContent = 'Error processing image.';
+                if (ocrStatus) {
+                    ocrStatus.textContent = 'Error processing image.';
+                }
             });
         };
 
-        imageInput.addEventListener("change", (e) => {
-            processImageFile(e.target.files[0]);
-        });
-        
-        inputBox.addEventListener("paste", (e) => {
-            const clipboard = e.clipboardData || window.clipboardData;
-            const text = clipboard.getData("text/plain");
+        if (imageInput) {
+            imageInput.addEventListener("change", (e) => {
+                processImageFile(e.target.files[0]);
+            });
+        }
 
-            if (text && text.trim().length > 0) {
-                // If text exists, just let it paste normally
-                setTimeout(() => {
+        const capitalizeToggle = document.getElementById("capitalizeToggle");
+        if (capitalizeToggle && outputBox && inputBox) {
+            capitalizeToggle.addEventListener("change", () => {
                 outputBox.value = formatText(inputBox.value);
-                }, 10);
-            } else {
-                // Otherwise, check for images
-                const items = clipboard.items;
-                for (let i = 0; i < items.length; i++) {
-                if (items[i].type.indexOf("image") !== -1) {
-                    e.preventDefault(); // Prevent default so it won’t paste an image blob
-                    const file = items[i].getAsFile();
-                    processImageFile(file);
-                    break;
+            });
+        }
+
+        if (inputBox) {
+            inputBox.addEventListener("paste", (e) => {
+                const clipboard = e.clipboardData || window.clipboardData;
+                const text = clipboard.getData("text/plain");
+
+                if (text && text.trim().length > 0) {
+                    // If text exists, just let it paste normally
+                    setTimeout(() => {
+                        outputBox.value = formatText(inputBox.value);
+                    }, 10);
+                } else {
+                    // Otherwise, check for images
+                    const items = clipboard.items;
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf("image") !== -1) {
+                            e.preventDefault(); // Prevent default so it won't paste an image blob
+                            const file = items[i].getAsFile();
+                            processImageFile(file);
+                            break;
+                        }
+                    }
                 }
-                }
-            }
-        });
+            });
+        }
 
         // --- CBM Calculator Logic ---
         /* =========================
@@ -955,12 +1557,12 @@
             const tokens = []; // will hold {num, unit, raw}
             // Regex to find number with optional unit (e.g., 50cm, 2.5 m, 20in)
             // We'll collect all number occurrences and units if present.
-            const tokenRegex = /(\d+(?:\.\d+)?)(?:\s*(mm|millimetres|millimeters|cm|centimeters|centimetres|m|meters|metres|in|inch|inches|ft|foot|feet|'|″|”)?)/ig;
+            const tokenRegex = /(\d+(?:\.\d+)?)(?:\s*(mm|millimetres|millimeters|cm|centimeters|centimetres|m|meters|metres|in|inch|inches|ft|foot|feet|'|″|")?)/ig;
             let m;
             while ((m = tokenRegex.exec(s)) !== null) {
                 let unit = (m[2] || '').toLowerCase();
-                if (unit === "'" || unit === "’") unit = 'ft';
-                if (unit === '""' || unit === '″' || unit === '”') unit = 'in';
+                if (unit === "'" || unit === "'") unit = 'ft';
+                if (unit === '""' || unit === '″' || unit === '"') unit = 'in';
                 // normalize plural forms
                 if (unit.endsWith('s')) unit = unit.replace(/s$/,'');
                 tokens.push({ num: Number(m[1]), unit: unit || null, raw: m[0], idx: m.index });
@@ -1091,12 +1693,7 @@
             divDisplay: document.getElementById('divDisplay'),
             messages: document.getElementById('messages'),
             copyCsv: document.getElementById('copyCsv'),
-            downloadCsv: document.getElementById('downloadCsv'),
             clearInput: document.getElementById('clearInput'),
-            sample1: document.getElementById('sample1'),
-            sample2: document.getElementById('sample2'),
-            sample3: document.getElementById('sample3'),
-            runTests: document.getElementById('runTests'),
             volTotalCard: document.getElementById('volTotalCard'),
             };
 
@@ -1106,16 +1703,18 @@
             /* Read UI state into options object */
             function readOptions(){
             return {
-                defaultUnit: els.defaultUnit.value || CONFIG.defaultUnit,
-                defaultDivisor: Number(els.divisor.value || CONFIG.defaultDivisor),
-                decimals: Number(els.decimals.value || CONFIG.decimals),
-                volEnabled: els.volToggle.checked,
+                defaultUnit: els.defaultUnit?.value || CONFIG.defaultUnit,
+                defaultDivisor: Number(els.divisor?.value || CONFIG.defaultDivisor),
+                decimals: Number(els.decimals?.value || CONFIG.decimals),
+                volEnabled: els.volToggle?.checked,
                 debounceMs: CONFIG.debounceMs,
             };
             }
 
-            /* Render parse results */
+            /* Render parse results with editable quantities */
             function renderResults(parsed, options){
+            if (!els.resultBody) return;
+            
             els.resultBody.innerHTML = '';
             let rows = 0;
             let totalCbm = 0, totalVol = 0;
@@ -1132,21 +1731,21 @@
                 const agg = lineObj.aggregated || {cbm:0, vol_kg:0, status:''};
                 const tr = document.createElement('tr');
                 tr.innerHTML = `<td class="truncate">${escapeHtml(rawShort)}</td>
-                                <td>${agg.qty||1}</td>
+                                <td>1</td>
                                 <td>-</td><td>-</td><td>-</td>
                                 <td>-</td>
-                                <td class="align-right">${formatNum(agg.cbm||0,decimals)}</td>
-                                <td class="align-right">${formatNum(agg.vol_kg||0,2)}</td>
+                                <td class="text-right">${formatNum(agg.cbm||0,decimals)}</td>
+                                <td class="text-right">${formatNum(agg.vol_kg||0,2)}</td>
                                 <td><span class="status-warn">${escapeHtml(agg.status||'Info')}</span></td>`;
                 els.resultBody.appendChild(tr);
                 rows++;
                 totalCbm += Number(agg.cbm||0);
                 totalVol += Number(agg.vol_kg||0);
-                csvRows.push([lineObj.rawLine, agg.qty||1, '', '', '', agg.cbm||0, agg.vol_kg||0, agg.status||''].map(csvEscape).join(','));
+                csvRows.push([lineObj.rawLine, 1, '', '', '', agg.cbm||0, agg.vol_kg||0, agg.status||''].map(csvEscape).join(','));
                 continue;
                 }
 
-                // For each component produce a row (component index shown in status)
+                // For each component produce a row with editable quantity
                 lineObj.components.forEach((comp, idx) => {
                 const lOrig = comp.dims ? (comp.dims.lRaw || '-') : '-';
                 const wOrig = comp.dims ? (comp.dims.wRaw || '-') : '-';
@@ -1157,31 +1756,35 @@
 
                 const tr = document.createElement('tr');
                 if (!comp.ok) tr.classList.add('invalid');
+                
+                // Create editable quantity input
+                const qtyInput = `<input type="number" class="qty-input" value="1" min="1" step="1" data-line="${parsed.indexOf(lineObj)}" data-comp="${idx}" onchange="updateQuantity(this)">`;
+                
                 tr.innerHTML = `<td class="truncate" title="${escapeHtml(lineObj.rawLine)}">${escapeHtml(rawShort)}</td>
-                                <td>${comp.qty||1}</td>
+                                <td>${qtyInput}</td>
                                 <td>${escapeHtml(lOrig)}</td>
                                 <td>${escapeHtml(wOrig)}</td>
                                 <td>${escapeHtml(hOrig)}</td>
                                 <td>${escapeHtml(lwhMeters)}</td>
-                                <td class="align-right">${formatNum(comp.cbm||0,decimals)}</td>
-                                <td class="align-right">${formatNum(comp.vol_kg||0,2)}</td>
+                                <td class="text-right cbm-cell">${formatNum(comp.cbm||0,decimals)}</td>
+                                <td class="text-right vol-cell">${formatNum(comp.vol_kg||0,2)}</td>
                                 <td><span class="${statusClass}">${escapeHtml(statusText)}</span>${idx>0?` <span class="muted-small">(part ${idx+1})</span>`:''}</td>`;
                 els.resultBody.appendChild(tr);
                 rows++;
                 totalCbm += Number(comp.cbm || 0);
                 totalVol += Number(comp.vol_kg || 0);
 
-                csvRows.push([lineObj.rawLine, comp.qty||1, comp.l_m||'', comp.w_m||'', comp.h_m||'', comp.cbm||0, comp.vol_kg||0, comp.status||''].map(csvEscape).join(','));
+                csvRows.push([lineObj.rawLine, 1, comp.l_m||'', comp.w_m||'', comp.h_m||'', comp.cbm||0, comp.vol_kg||0, comp.status||''].map(csvEscape).join(','));
                 });
             }
 
             lastCsv = csvRows.join('\n');
 
-            els.rowCount.textContent = rows;
-            els.totalCbm.textContent = `${formatNum(totalCbm, options.decimals)} m³`;
-            els.totalVol.textContent = `${formatNum(totalVol,2)} kg`;
-            els.divDisplay.textContent = options.defaultDivisor;
-            els.volTotalCard.style.display = options.volEnabled ? 'flex' : 'none';
+            if (els.rowCount) els.rowCount.textContent = rows;
+            if (els.totalCbm) els.totalCbm.textContent = `${formatNum(totalCbm, options.decimals)} m³`;
+            if (els.totalVol) els.totalVol.textContent = `${formatNum(totalVol,2)} kg`;
+            if (els.divDisplay) els.divDisplay.textContent = options.defaultDivisor;
+            if (els.volTotalCard) els.volTotalCard.style.display = options.volEnabled ? 'flex' : 'none';
             lastParseResult = parsed;
 
             // messages
@@ -1194,12 +1797,67 @@
                 warnings.push(`${safeText(p.rawLine,40)} → ${p.aggregated.status}`);
                 }
             });
-            if (warnings.length>0) {
-                els.messages.innerHTML = `<div class="status-warn"><strong>Notes:</strong> ${escapeHtml(warnings.slice(0,4).join(' • '))}${warnings.length>4?` <span class="muted-small">(+${warnings.length-4} more)</span>`:''}</div>`;
-            } else {
-                els.messages.innerHTML = `<div class="muted-small">All lines parsed OK.</div>`;
+            if (els.messages) {
+                if (warnings.length>0) {
+                    els.messages.innerHTML = `<div class="status-warn"><strong>Notes:</strong> ${escapeHtml(warnings.slice(0,4).join(' • '))}${warnings.length>4?` <span class="muted-small">(+${warnings.length-4} more)</span>`:''}</div>`;
+                } else {
+                    els.messages.innerHTML = `<div class="muted-small">All lines parsed OK.</div>`;
+                }
             }
             }
+
+            /* Update quantity and recalculate CBM */
+            function updateQuantity(input) {
+                const lineIndex = parseInt(input.dataset.line);
+                const compIndex = parseInt(input.dataset.comp);
+                const newQty = parseInt(input.value) || 1;
+                
+                if (lastParseResult[lineIndex] && lastParseResult[lineIndex].components[compIndex]) {
+                    const comp = lastParseResult[lineIndex].components[compIndex];
+                    const baseCbm = comp.l_m * comp.w_m * comp.h_m;
+                    const baseVol = comp.vol_kg / (comp.qty || 1);
+                    
+                    comp.qty = newQty;
+                    comp.cbm = baseCbm * newQty;
+                    comp.vol_kg = baseVol * newQty;
+                    
+                    // Update the display
+                    const row = input.closest('tr');
+                    const cbmCell = row.querySelector('.cbm-cell');
+                    const volCell = row.querySelector('.vol-cell');
+                    const options = readOptions();
+                    
+                    if (cbmCell) cbmCell.textContent = formatNum(comp.cbm, options.decimals);
+                    if (volCell) volCell.textContent = formatNum(comp.vol_kg, 2);
+                    
+                    // Recalculate totals
+                    updateTotals();
+                }
+            }
+
+            /* Update total calculations */
+            function updateTotals() {
+                let totalCbm = 0, totalVol = 0;
+                const options = readOptions();
+                
+                lastParseResult.forEach(lineObj => {
+                    if (lineObj.components.length === 0) {
+                        totalCbm += Number(lineObj.aggregated?.cbm || 0);
+                        totalVol += Number(lineObj.aggregated?.vol_kg || 0);
+                    } else {
+                        lineObj.components.forEach(comp => {
+                            totalCbm += Number(comp.cbm || 0);
+                            totalVol += Number(comp.vol_kg || 0);
+                        });
+                    }
+                });
+                
+                if (els.totalCbm) els.totalCbm.textContent = `${formatNum(totalCbm, options.decimals)} m³`;
+                if (els.totalVol) els.totalVol.textContent = `${formatNum(totalVol, 2)} kg`;
+            }
+
+            // Make updateQuantity available globally
+            window.updateQuantity = updateQuantity;
 
             /* Helper to escape HTML */
             function escapeHtml(s){
@@ -1212,7 +1870,7 @@
             /* Parse and render (main) */
             function doParse(){
             const options = readOptions();
-            const text = els.cbmInput.value;
+            const text = els.cbmInput?.value || '';
             // Performance: if many lines, parse in chunks (so UI doesn't freeze)
             const linesCount = text.split(/\r?\n/).filter(Boolean).length;
             if (linesCount > CONFIG.chunkThreshold) {
@@ -1243,187 +1901,82 @@
             /* Attach event listeners */
             const debouncedParse = debounce(doParse, CONFIG.debounceMs);
 
-            els.cbmInput.addEventListener('input', debouncedParse);
-            els.defaultUnit.addEventListener('change', ()=>{debouncedParse();});
-            els.divisor.addEventListener('input', () => { debouncedParse(); });
-            els.volToggle.addEventListener('change', ()=>{debouncedParse();});
-            els.decimals.addEventListener('change', ()=>{debouncedParse();});
-
-            els.copyCsv.addEventListener('click', () => {
-            if (!lastCsv) {
-                navigator.clipboard.writeText('').then(()=>{},()=>{});
-            } else {
-                navigator.clipboard.writeText(lastCsv).then(()=> {
-                els.messages.innerHTML = `<div class="muted-small">CSV copied to clipboard.</div>`;
-                }, ()=> {
-                els.messages.innerHTML = `<div class="status-warn">Copy failed (clipboard may be blocked).</div>`;
+            if (els.cbmInput) {
+                els.cbmInput.addEventListener('input', debouncedParse);
+                
+                /* Keyboard: Ctrl+Enter parse */
+                els.cbmInput.addEventListener('keydown', (ev)=>{
+                    if ((ev.ctrlKey || ev.metaKey) && ev.key === 'Enter'){
+                        doParse();
+                    }
                 });
             }
-            });
+            
+            if (els.defaultUnit) els.defaultUnit.addEventListener('change', ()=>{debouncedParse();});
+            if (els.divisor) els.divisor.addEventListener('input', () => { debouncedParse(); });
+            if (els.volToggle) els.volToggle.addEventListener('change', ()=>{debouncedParse();});
+            if (els.decimals) els.decimals.addEventListener('change', ()=>{debouncedParse();});
 
-            els.downloadCsv.addEventListener('click', () => {
-            const csv = lastCsv || '';
-            const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'cbm_export.csv';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            });
-
-            els.clearInput.addEventListener('click', ()=>{
-            els.cbmInput.value = '';
-            doParse();
-            });
-
-            els.sample1.addEventListener('click', ()=>{
-            els.cbmInput.value = `50cm * 40cm * 30cm
-            2 x 50cm x 40cm x 30cm`;
-            doParse();
-            });
-            els.sample2.addEventListener('click', ()=>{
-            els.cbmInput.value = `50 x 40 x 30 cm + 2m * 3m * 4m
-            20in x 10in x 5in
-            3pcs 30cm 20cm 10cm`;
-            doParse();
-            });
-            els.sample3.addEventListener('click', ()=>{
-            els.cbmInput.value = `50cm * 40cm * 30cm
-            2 x 50cm x 40cm x 30cm
-            0.5m * 1m * 2m
-            50 x 40 x 30 cm + 2m * 3m * 4m
-            20in x 10in x 5in
-            3pcs 30cm 20cm 10cm
-            abc def
-            3810082864/KHSC
-            50cm40cm30cm
-            3810081857\\KHSC`;
-            doParse();
-            });
-
-            /* Keyboard: Ctrl+Enter parse */
-            els.cbmInput.addEventListener('keydown', (ev)=>{
-            if ((ev.ctrlKey || ev.metaKey) && ev.key === 'Enter'){
-                doParse();
+            if (els.copyCsv) {
+                els.copyCsv.addEventListener('click', () => {
+                if (!lastCsv) {
+                    navigator.clipboard.writeText('').then(()=>{},()=>{});
+                } else {
+                    navigator.clipboard.writeText(lastCsv).then(()=> {
+                    if (els.messages) els.messages.innerHTML = `<div class="muted-small">CSV copied to clipboard.</div>`;
+                    }, ()=> {
+                    if (els.messages) els.messages.innerHTML = `<div class="status-warn">Copy failed (clipboard may be blocked).</div>`;
+                    });
+                }
+                });
             }
-            });
 
-            /* Run simple unit tests and show results */
-            els.runTests.addEventListener('click', runUnitTests);
+            if (els.clearInput) {
+                els.clearInput.addEventListener('click', ()=>{
+                if (els.cbmInput) els.cbmInput.value = '';
+                doParse();
+                });
+            }
 
             /* initial parse with defaults */
             (function init(){
             // sync UI with CONFIG
-            els.defaultUnit.value = CONFIG.defaultUnit;
-            els.divisor.value = CONFIG.defaultDivisor;
-            els.decimals.value = CONFIG.decimals;
-            els.volToggle.checked = CONFIG.volEnabled;
+            if (els.defaultUnit) els.defaultUnit.value = CONFIG.defaultUnit;
+            if (els.divisor) els.divisor.value = CONFIG.defaultDivisor;
+            if (els.decimals) els.decimals.value = CONFIG.decimals;
+            if (els.volToggle) els.volToggle.checked = CONFIG.volEnabled;
             doParse();
             })();
-
-            /* -------------
-            Minimal tests / test harness
-            ------------- */
-
-            function runUnitTests(){
-            const options = readOptions();
-            const tests = [
-                {name:'1: 50cm * 40cm * 30cm', input:'50cm * 40cm * 30cm', expectedCbm: 0.06},
-                {name:'2: 2 x 50cm x 40cm x 30cm', input:'2 x 50cm x 40cm x 30cm', expectedCbm: 0.12},
-                {name:'3: 0.5m * 1m * 2m', input:'0.5m * 1m * 2m', expectedCbm: 1.0},
-                {name:'4: 50 x 40 x 30 cm + 2m * 3m * 4m', input:'50 x 40 x 30 cm + 2m * 3m * 4m', expectedCbm: 24.06},
-                {name:'5: 20in x 10in x 5in', input:'20in x 10in x 5in', expectedCbm: 0.0025888},
-                {name:'6: 3pcs 30cm 20cm 10cm', input:'3pcs 30cm 20cm 10cm', expectedCbm: 0.018},
-                {name:'7: invalid abc def', input:'abc def', expectedInvalid:true},
-                {name:'8: mixed codes', input:`3810082864/KHSC
-            50cm40cm30cm
-            3810081857\\KHSC`, expectedMulti:true}
-            ];
-
-            const results = [];
-            for (const t of tests){
-                const parsed = parseInput(t.input, Object.assign({}, CONFIG, options));
-                // Check aggregated CBM total
-                let sumCbm = 0;
-                let invalid = false;
-                parsed.forEach(p => {
-                if (p.components.length === 0) {
-                    // code line => if expectedMulti, we accept it
-                    if (t.expectedInvalid) invalid = true;
-                } else {
-                    p.components.forEach(c => {
-                    if (!c.ok) invalid = true;
-                    sumCbm += (c.cbm || 0);
-                    });
-                }
-                });
-                const pass = t.expectedInvalid ? invalid : (t.expectedMulti ? parsed.length>=3 : Math.abs(sumCbm - t.expectedCbm) <= (Math.max(1e-6, Math.abs(t.expectedCbm)*1e-6)));
-                results.push({test:t.name, pass, sumCbm, parsed});
-            }
-
-            // Show results in messages box
-            const passed = results.filter(r=>r.pass).length;
-            const total = results.length;
-            let html = `<div><strong>Unit tests:</strong> ${passed}/${total} passed.</div><ul>`;
-            for (const r of results){
-                html += `<li style="margin-top:6px"><strong>${escapeHtml(r.test)}</strong> — ${r.pass ? '<span class="status-ok">PASS</span>' : '<span class="status-err">FAIL</span>'}`;
-                if (!r.pass) html += `<div class="muted-small">Computed CBM: ${r.sumCbm}</div>`;
-                html += `</li>`;
-            }
-            html += `</ul>`;
-            els.messages.innerHTML = html;
-            // Also pre-fill input with last failing test's parsed sample for inspection
-            const failed = results.find(r=>!r.pass);
-            if (failed) {
-                // put its parsed content into textarea to allow inspection
-                // do not overwrite user's input by default; only show a button to apply
-                const applyBtn = document.createElement('button');
-                applyBtn.textContent = 'Inspect failing input';
-                applyBtn.className = 'small';
-                applyBtn.addEventListener('click', ()=> {
-                const original = tests.find(t=>t.name===failed.test).input;
-                els.cbmInput.value = original;
-                doParse();
-                });
-                els.messages.appendChild(document.createElement('div')).appendChild(applyBtn);
-            }
-            }
-
-            /* expose parse functions for developer console if needed */
-            window.CBM = {
-            parseInput, parseLine, parseComponent, getLastCsv: ()=> lastCsv
-            };
 
         // --- ARITZIA Formatter Logic ---
         const aritziaInput = document.getElementById("aritziaInput");
         const aritziaOutput = document.getElementById("aritziaOutput");
 
-        aritziaInput.addEventListener("input", () => {
-            const lines = aritziaInput.value.split("\n");
-            const formattedBlocks = [];
+        if (aritziaInput && aritziaOutput) {
+            aritziaInput.addEventListener("input", () => {
+                const lines = aritziaInput.value.split("\n");
+                const formattedBlocks = [];
 
-            lines.forEach(line => {
-                if (!line.trim()) return;
-                const parts = line.split(/\s*\t\s*/); // Split by tab, allowing for surrounding whitespace
-                if (parts.length >= 4) {
-                    const [po, article, style, ...descriptionParts] = parts;
-                    const description = descriptionParts.join(' '); // Re-join description if it contained tabs
+                lines.forEach(line => {
+                    if (!line.trim()) return;
+                    const parts = line.split(/\s*\t\s*/); // Split by tab, allowing for surrounding whitespace
+                    if (parts.length >= 4) {
+                        const [po, article, style, ...descriptionParts] = parts;
+                        const description = descriptionParts.join(' '); // Re-join description if it contained tabs
 
-                    formattedBlocks.push(
-                        `${description}\n` +
-                        `P.O. NO.: ${po}\n` +
-                        `ARTICLE: ${article}\n` +
-                        `STYLE NO.: ${style}`
-                    );
-                }
+                        formattedBlocks.push(
+                            `${description}\n` +
+                            `P.O. NO.: ${po}\n` +
+                            `ARTICLE: ${article}\n` +
+                            `STYLE NO.: ${style}`
+                        );
+                    }
+                });
+
+                // Join blocks with a double newline, then apply the final universal formatting
+                aritziaOutput.value = formatText(formattedBlocks.join("\n\n"));
             });
-
-            // Join blocks with a double newline, then apply the final universal formatting
-            aritziaOutput.value = formatText(formattedBlocks.join("\n\n"));
-        });
+        }
 
         /*****************************************************************************
          * PO Formatter implementation (unchanged)
@@ -1505,85 +2058,106 @@
         const runSamplesBtn = document.getElementById('runSamplesBtn');
 
         function processPOAndRender() {
+            if (!poInput || !poOutput) return '';
             const raw = poInput.value || '';
             const out = processPOInput(raw);
             poOutput.value = out;
             return out;
         }
 
-        poInput.addEventListener('input', () => {
-            processPOAndRender();
-        });
-
-        runSamplesBtn.addEventListener('click', () => {
-            const samples = [
-                {
-                    name: 'Duplicate removal',
-                    input: '3810083392,3810083406,3810083392',
-                    expected: '3810083392,3810083406'
-                },
-                {
-                    name: 'Simple slash expansion',
-                    input: '536838863/962/292',
-                    expected: '536838863,536838962,536838292'
-                },
-                {
-                    name: 'Long slash expansion + mix',
-                    input: '810083407/392/393/400/401/406',
-                    expected: '810083407,810083392,810083393,810083400,810083401,810083406'
-                }
-            ];
-
-            let debugLines = [];
-            samples.forEach(s => {
-                const actual = (function(){
-                    poInput.value = s.input;
-                    return processPOAndRender();
-                })();
-                const pass = actual === s.expected;
-                debugLines.push(`Test: ${s.name}`);
-                debugLines.push(`Input: ${s.input}`);
-                debugLines.push(`Expected: ${s.expected}`);
-                debugLines.push(`Actual:   ${actual}`);
-                debugLines.push(`PASS: ${pass}`);
-                debugLines.push('-------------------------');
+        if (poInput) {
+            poInput.addEventListener('input', () => {
+                processPOAndRender();
             });
 
-            poDebug.textContent = debugLines.join('\n');
-        });
-
-        // OCR paste support for PO input
-        poInput.addEventListener('paste', (e) => {
-            const clipboard = e.clipboardData || window.clipboardData;
-            const text = clipboard.getData("text/plain");
-            if (text && text.trim().length > 0) {
-                setTimeout(processPOAndRender, 10);
-            } else {
-                const items = clipboard.items || [];
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i].type && items[i].type.indexOf('image') !== -1) {
-                        e.preventDefault();
-                        const file = items[i].getAsFile();
-                        processImageFile(file);
-                        break;
+            // OCR paste support for PO input
+            poInput.addEventListener('paste', (e) => {
+                const clipboard = e.clipboardData || window.clipboardData;
+                const text = clipboard.getData("text/plain");
+                if (text && text.trim().length > 0) {
+                    setTimeout(processPOAndRender, 10);
+                } else {
+                    const items = clipboard.items || [];
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type && items[i].type.indexOf('image') !== -1) {
+                            e.preventDefault();
+                            const file = items[i].getAsFile();
+                            processImageFile(file);
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // drop support
-        poInput.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                const f = e.dataTransfer.files[0];
-                if (f.type && f.type.indexOf('image') !== -1) {
-                    processImageFile(f);
+            // drop support
+            poInput.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    const f = e.dataTransfer.files[0];
+                    if (f.type && f.type.indexOf('image') !== -1) {
+                        processImageFile(f);
+                    }
                 }
-            }
-        });
-        poInput.addEventListener('dragover', (e) => {
-            e.preventDefault();
-        });
+            });
+            poInput.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+        }
+
+        if (runSamplesBtn && poDebug) {
+            runSamplesBtn.addEventListener('click', () => {
+                const samples = [
+                    {
+                        name: 'Duplicate removal',
+                        input: '3810083392,3810083406,3810083392',
+                        expected: '3810083392,3810083406'
+                    },
+                    {
+                        name: 'Simple slash expansion',
+                        input: '536838863/962/292',
+                        expected: '536838863,536838962,536838292'
+                    },
+                    {
+                        name: 'Long slash expansion + mix',
+                        input: '810083407/392/393/400/401/406',
+                        expected: '810083407,810083392,810083393,810083400,810083401,810083406'
+                    }
+                ];
+
+                let debugLines = [];
+                samples.forEach(s => {
+                    const actual = (function(){
+                        if (poInput) poInput.value = s.input;
+                        return processPOAndRender();
+                    })();
+                    const pass = actual === s.expected;
+                    debugLines.push(`Test: ${s.name}`);
+                    debugLines.push(`Input: ${s.input}`);
+                    debugLines.push(`Expected: ${s.expected}`);
+                    debugLines.push(`Actual:   ${actual}`);
+                    debugLines.push(`PASS: ${pass}`);
+                    debugLines.push('-------------------------');
+                });
+
+                poDebug.textContent = debugLines.join('\n');
+            });
+        }
+
+        // Add copy PO functionality for PO formatter
+        const copyPOsBtn = document.getElementById('copyPOs');
+        if (copyPOsBtn) {
+            copyPOsBtn.addEventListener('click', () => {
+                const output = poOutput?.value || '';
+                if (!output) {
+                    alert('No PO numbers to copy.');
+                    return;
+                }
+                navigator.clipboard.writeText(output).then(() => {
+                    copyPOsBtn.textContent = 'Copied ✓';
+                    setTimeout(() => copyPOsBtn.textContent = 'Copy PO Numbers', 1200);
+                }, () => alert('Copy failed.'));
+            });
+        }
 
         window.addEventListener('load', () => {
             if (poInput && poInput.value.trim().length > 0) processPOAndRender();
@@ -1606,9 +2180,8 @@
         const ttcSummary = document.getElementById('ttcSummary');
         const processTTCBtn = document.getElementById('processTTCBtn');
         const clearTTCInput = document.getElementById('clearTTCInput');
-        const copyPOsBtn = document.getElementById('copyPOs');
-        const copyDestsBtn = document.getElementById('copyDests');
-        const copyCSVBtn = document.getElementById('copyCSV');
+        const copyTTCPOsBtn = document.getElementById('copyPOs');
+        const copyTTCCSVBtn = document.getElementById('copyCSV');
 
         function safeTrim(s) { return (s || '').trim(); }
 
@@ -1639,6 +2212,8 @@
         }
 
         function processTextToColumns() {
+            if (!ttcInput || !ttcPOs || !ttcDests || !ttcSummary) return { poList: [], destList: [], invalidLines: [] };
+            
             const raw = ttcInput.value || '';
             // Keep original line ordering but ignore fully blank lines
             const lines = raw.split(/\r?\n/);
@@ -1669,12 +2244,14 @@
             ttcDests.value = destList.join('\n');
 
             // Show invalid box if any invalid lines
-            if (invalidLines.length > 0) {
-                ttcInvalid.style.display = 'block';
-                ttcInvalid.textContent = 'Lines with missing data:\n' + invalidLines.join('\n');
-            } else {
-                ttcInvalid.style.display = 'none';
-                ttcInvalid.textContent = '';
+            if (ttcInvalid) {
+                if (invalidLines.length > 0) {
+                    ttcInvalid.style.display = 'block';
+                    ttcInvalid.textContent = 'Lines with missing data:\n' + invalidLines.join('\n');
+                } else {
+                    ttcInvalid.style.display = 'none';
+                    ttcInvalid.textContent = '';
+                }
             }
 
             ttcSummary.textContent = `${poList.length} lines processed${invalidLines.length ? ' • ' + invalidLines.length + ' issue(s)' : ''}`;
@@ -1682,23 +2259,31 @@
         }
 
         // Wire UI events
-        processTTCBtn.addEventListener('click', () => {
-            processTextToColumns();
-        });
+        if (processTTCBtn) {
+            processTTCBtn.addEventListener('click', () => {
+                processTextToColumns();
+            });
+        }
 
         // Also process live on paste / input for convenience
-        ttcInput.addEventListener('input', () => {
-            processTextToColumns();
-        });
+        if (ttcInput) {
+            ttcInput.addEventListener('input', () => {
+                processTextToColumns();
+            });
+        }
 
-        clearTTCInput.addEventListener('click', () => {
-            ttcInput.value = '';
-            ttcPOs.value = '';
-            ttcDests.value = '';
-            ttcInvalid.style.display = 'none';
-            ttcInvalid.textContent = '';
-            ttcSummary.textContent = '0 lines processed';
-        });
+        if (clearTTCInput) {
+            clearTTCInput.addEventListener('click', () => {
+                if (ttcInput) ttcInput.value = '';
+                if (ttcPOs) ttcPOs.value = '';
+                if (ttcDests) ttcDests.value = '';
+                if (ttcInvalid) {
+                    ttcInvalid.style.display = 'none';
+                    ttcInvalid.textContent = '';
+                }
+                if (ttcSummary) ttcSummary.textContent = '0 lines processed';
+            });
+        }
 
         // Copy helper that writes to clipboard and returns a promise
         function copyToClipboard(text) {
@@ -1720,101 +2305,241 @@
             return navigator.clipboard.writeText(text);
         }
 
-        copyPOsBtn.addEventListener('click', () => {
-            // Ensure latest processing
-            const { poList } = processTextToColumns();
-            if (!poList || poList.length === 0) {
-                copyToClipboard('').then(() => alert('No PO values to copy.'), () => alert('Copy failed.'));
-                return;
-            }
-            const text = poList.join('\n'); // newline-separated -> vertical cells in Excel
-            copyToClipboard(text).then(() => {
-                // small visual feedback (non-blocking)
-                copyPOsBtn.textContent = 'Copied ✓';
-                setTimeout(() => copyPOsBtn.textContent = 'Copy PO', 1200);
-            }, () => alert('Copy failed.'));
-        });
+        if (copyTTCPOsBtn) {
+            copyTTCPOsBtn.addEventListener('click', () => {
+                // Ensure latest processing
+                const { poList } = processTextToColumns();
+                if (!poList || poList.length === 0) {
+                    copyToClipboard('').then(() => alert('No PO values to copy.'), () => alert('Copy failed.'));
+                    return;
+                }
+                const text = poList.join('\n'); // newline-separated -> vertical cells in Excel
+                copyToClipboard(text).then(() => {
+                    // small visual feedback (non-blocking)
+                    copyTTCPOsBtn.textContent = 'Copied ✓';
+                    setTimeout(() => copyTTCPOsBtn.textContent = 'Copy PO', 1200);
+                }, () => alert('Copy failed.'));
+            });
+        }
 
-        copyDestsBtn.addEventListener('click', () => {
-            const { destList } = processTextToColumns();
-            if (!destList || destList.length === 0) {
-                copyToClipboard('').then(() => alert('No destination values to copy.'), () => alert('Copy failed.'));
-                return;
-            }
-            const text = destList.join('\n');
-            copyToClipboard(text).then(() => {
-                copyDestsBtn.textContent = 'Copied ✓';
-                setTimeout(() => copyDestsBtn.textContent = 'Copy Dest', 1200);
-            }, () => alert('Copy failed.'));
-        });
-
-        copyCSVBtn.addEventListener('click', () => {
-            const { poList, destList } = processTextToColumns();
-            if (!poList || poList.length === 0) {
-                copyToClipboard('').then(() => alert('No data to copy as CSV.'), () => alert('Copy failed.'));
-                return;
-            }
-            // Build CSV rows, escaping if needed
-            const rows = [];
-            for (let i = 0; i < poList.length; i++) {
-                const p = poList[i] || '';
-                const d = (destList && destList[i]) ? destList[i] : '';
-                // simple quoting if contains comma or quotes or newline
-                const q = v => {
-                    if (v === null || v === undefined) return '';
-                    const s = String(v);
-                    if (s.includes('"')) {
-                        return '"' + s.replace(/"/g, '""') + '"';
-                    }
-                    if (s.includes(',') || s.includes('\n')) {
-                        return '"' + s + '"';
-                    }
-                    return s;
-                };
-                rows.push(q(p) + ',' + q(d));
-            }
-            const csvText = rows.join('\n');
-            copyToClipboard(csvText).then(() => {
-                copyCSVBtn.textContent = 'Copied ✓';
-                setTimeout(() => copyCSVBtn.textContent = 'Copy as CSV', 1200);
-            }, () => alert('Copy failed.'));
-        });
+        if (copyTTCCSVBtn) {
+            copyTTCCSVBtn.addEventListener('click', () => {
+                const { poList, destList } = processTextToColumns();
+                if (!poList || poList.length === 0) {
+                    copyToClipboard('').then(() => alert('No data to copy as CSV.'), () => alert('Copy failed.'));
+                    return;
+                }
+                // Build CSV rows, escaping if needed
+                const rows = [];
+                for (let i = 0; i < poList.length; i++) {
+                    const p = poList[i] || '';
+                    const d = (destList && destList[i]) ? destList[i] : '';
+                    // simple quoting if contains comma or quotes or newline
+                    const q = v => {
+                        if (v === null || v === undefined) return '';
+                        const s = String(v);
+                        if (s.includes('"')) {
+                            return '"' + s.replace(/"/g, '""') + '"';
+                        }
+                        if (s.includes(',') || s.includes('\n')) {
+                            return '"' + s + '"';
+                        }
+                        return s;
+                    };
+                    rows.push(q(p) + ',' + q(d));
+                }
+                const csvText = rows.join('\n');
+                copyToClipboard(csvText).then(() => {
+                    copyTTCCSVBtn.textContent = 'Copied ✓';
+                    setTimeout(() => copyTTCCSVBtn.textContent = 'Copy as CSV', 1200);
+                }, () => alert('Copy failed.'));
+            });
+        }
 
         // Allow dropping an image onto the TTC input to OCR and process (reuses processImageFile)
-        ttcInput.addEventListener('paste', (e) => {
-            const clipboard = e.clipboardData || window.clipboardData;
-            const text = clipboard.getData("text/plain");
-            if (text && text.trim().length > 0) {
-                setTimeout(processTextToColumns, 10);
-            } else {
-                const items = clipboard.items || [];
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i].type && items[i].type.indexOf('image') !== -1) {
-                        e.preventDefault();
-                        const file = items[i].getAsFile();
-                        processImageFile(file);
-                        break;
+        if (ttcInput) {
+            ttcInput.addEventListener('paste', (e) => {
+                const clipboard = e.clipboardData || window.clipboardData;
+                const text = clipboard.getData("text/plain");
+                if (text && text.trim().length > 0) {
+                    setTimeout(processTextToColumns, 10);
+                } else {
+                    const items = clipboard.items || [];
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type && items[i].type.indexOf('image') !== -1) {
+                            e.preventDefault();
+                            const file = items[i].getAsFile();
+                            processImageFile(file);
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        ttcInput.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                const f = e.dataTransfer.files[0];
-                if (f.type && f.type.indexOf('image') !== -1) {
-                    processImageFile(f);
+            ttcInput.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    const f = e.dataTransfer.files[0];
+                    if (f.type && f.type.indexOf('image') !== -1) {
+                        processImageFile(f);
+                    }
                 }
-            }
-        });
-        ttcInput.addEventListener('dragover', (e) => e.preventDefault());
+            });
+            ttcInput.addEventListener('dragover', (e) => e.preventDefault());
+        }
 
         // Initialize TTC summary on load
         window.addEventListener('load', () => {
-            ttcSummary.textContent = '0 lines processed';
+            if (ttcSummary) ttcSummary.textContent = '0 lines processed';
         });
 
+        // Simple page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active from nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected page
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+            
+            // Add active to corresponding nav link
+            const navLinks = document.querySelectorAll('.nav-link');
+            if (pageId === 'home' && navLinks[0]) navLinks[0].classList.add('active');
+            if (pageId === 'store' && navLinks[1]) navLinks[1].classList.add('active');
+            if (pageId === 'workspace' && navLinks[2]) navLinks[2].classList.add('active');
+        }
+
+        // Initialize workspace tab functionality
+        window.addEventListener('load', () => {
+            if (window.location.hash === '#workspace') showPage('workspace');
+        });
+
+        // Tool management functions
+        function addToolToWorkspace(toolId) {
+            // Find first empty slot
+            const emptySlot = document.querySelector('.workspace-tab.empty');
+            if (!emptySlot) {
+                alert('All workspace slots are full. Remove a tool first.');
+                return;
+            }
+
+            const slotIndex = parseInt(emptySlot.dataset.slot);
+            
+            // Update tab
+            emptySlot.classList.remove('empty');
+            emptySlot.innerHTML = `
+                <span>${getToolName(toolId)}</span>
+                <div class="tab-controls">
+                    <button class="tab-control-btn" onclick="removeToolFromSlot(${slotIndex})" title="Remove">×</button>
+                </div>
+            `;
+            emptySlot.dataset.toolId = toolId;
+
+            // Switch to this tab and show the tool
+            switchWorkspaceTab(slotIndex);
+            showPage('workspace');
+        }
+
+        function getToolName(toolId) {
+            const names = {
+                'text-formatter': 'Text Formatter',
+                'cbm-calculator': 'CBM Calculator',
+                'aritzia-formatter': 'ARITZIA Formatter',
+                'po-formatter': 'PO Formatter',
+                'text-to-columns': 'Text-to-Columns'
+            };
+            return names[toolId] || toolId;
+        }
+
+        // Workspace tab switching
+        function switchWorkspaceTab(slotIndex) {
+            // Remove active from all tabs and content
+            document.querySelectorAll('.workspace-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tool-workspace').forEach(workspace => workspace.classList.remove('active'));
+
+            // Activate selected tab
+            const selectedTab = document.querySelector(`[data-slot="${slotIndex}"]`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+                
+                // Show corresponding workspace
+                const toolId = selectedTab.dataset.toolId;
+                if (toolId) {
+                    const workspace = document.getElementById(`${toolId}-workspace`);
+                    if (workspace) {
+                        workspace.classList.add('active');
+                    }
+                } else {
+                    // Show empty workspace
+                    document.getElementById('empty-workspace').classList.add('active');
+                }
+            }
+        }
+
+        // Remove tool from workspace
+        function removeToolFromSlot(slotIndex) {
+            const slot = document.querySelector(`[data-slot="${slotIndex}"]`);
+            if (slot) {
+                slot.classList.add('empty');
+                slot.innerHTML = '<span>+ Add Tool</span>';
+                slot.removeAttribute('data-tool-id');
+                
+                // If this was the active tab, switch to empty workspace
+                if (slot.classList.contains('active')) {
+                    document.querySelectorAll('.tool-workspace').forEach(workspace => workspace.classList.remove('active'));
+                    document.getElementById('empty-workspace').classList.add('active');
+                }
+            }
+        }
+
+        // Search functionality
+        function filterTools() {
+            const searchTerm = document.getElementById('toolSearch').value.toLowerCase();
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            
+            document.querySelectorAll('.tool-card').forEach(card => {
+                const toolName = card.querySelector('.tool-name').textContent.toLowerCase();
+                const toolDescription = card.querySelector('.tool-description').textContent.toLowerCase();
+                const categories = card.dataset.categories || '';
+                const tags = card.dataset.tags || '';
+                
+                const matchesSearch = !searchTerm || 
+                    toolName.includes(searchTerm) || 
+                    toolDescription.includes(searchTerm) ||
+                    tags.includes(searchTerm);
+                
+                const matchesCategory = !selectedCategory || categories.includes(selectedCategory);
+                
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Load more tools (placeholder)
+        function loadMoreTools() {
+            // Placeholder for loading more tools
+            console.log('Loading more tools...');
+        }
+
+        // Make functions globally available
+        window.showPage = showPage;
+        window.addToolToWorkspace = addToolToWorkspace;
+        window.switchWorkspaceTab = switchWorkspaceTab;
+        window.removeToolFromSlot = removeToolFromSlot;
+        window.filterTools = filterTools;
+        window.loadMoreTools = loadMoreTools;
     </script>
 </body>
 </html>
